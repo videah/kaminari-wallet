@@ -8,6 +8,9 @@ class KaminariApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Kaminari Wallet",
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple
+      ),
       home: WelcomePage(),
     );
   }
