@@ -9,7 +9,7 @@ class KaminariApp extends StatelessWidget {
     return MaterialApp(
       title: "Kaminari Wallet",
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple
+        primarySwatch: Colors.deepPurple,
       ),
       home: WelcomePage(),
     );
