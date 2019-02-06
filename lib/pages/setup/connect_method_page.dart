@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:kaminari_wallet/pages/setup/confirm_page.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
 class ConnectMethodPage extends StatelessWidget {
@@ -16,10 +17,17 @@ class ConnectMethodPage extends StatelessWidget {
           _scanForQR(context);
         },
       ),
-      ListTile(
-        title: Text("Connect via LNDConnect URL"),
-        subtitle: Text("Connect to your node using your clipboard"),
-        leading: Icon(FontAwesomeIcons.clipboard),
+      Builder(
+        builder: (context) {
+          return ListTile(
+            title: Text("Connect via LNDConnect URL"),
+            subtitle: Text("Connect to your node using your clipboard"),
+            leading: Icon(FontAwesomeIcons.clipboard),
+            onTap: () {
+              _connectFromClipboard(context);
+            },
+          );
+        },
       ),
     ];
 
@@ -49,11 +57,38 @@ class ConnectMethodPage extends StatelessWidget {
     );
   }
 
+  _connectFromClipboard(context) async {
+    try {
+      Scaffold.of(context).removeCurrentSnackBar();
+      var uri = await Clipboard.getData(Clipboard.kTextPlain);
+      var lnd = LNDConnect.decode(uri.text);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ConfirmPage(lnd: lnd),
+        ),
+      );
+    } catch (e) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: ListTile(
+            title: Text("Clipboard does not contain valid URL"),
+            subtitle: Text("Are you sure you copied it right?"),
+            leading: Icon(Icons.error),
+          )
+        ),
+      );
+    }
+  }
+
   _scanForQR(context) async {
     try {
-      String qr = await BarcodeScanner.scan();
-      var test = LNDConnect.decode(qr);
-      print(test.address);
+      var qr = await BarcodeScanner.scan();
+      var lnd = LNDConnect.decode(qr);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ConfirmPage(lnd: lnd),
+        ),
+      );
     } on PlatformException catch (e) {
       showDialog(
         context: context,
