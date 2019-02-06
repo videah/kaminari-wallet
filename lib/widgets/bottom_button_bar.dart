@@ -8,7 +8,7 @@ class BottomButtonBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.0,
+      height: 90.0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
