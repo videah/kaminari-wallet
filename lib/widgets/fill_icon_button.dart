@@ -19,30 +19,33 @@ class FillIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: icon != null
-          ? RaisedButton.icon(
-              onPressed: onTap,
-              color: backgroundColor ?? Theme.of(context).primaryColor,
-              label: child,
-              icon: icon,
-              colorBrightness: Brightness.dark,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(0.0),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: icon != null
+            ? RaisedButton.icon(
+                onPressed: onTap,
+                color: backgroundColor ?? Theme.of(context).primaryColor,
+                label: child,
+                icon: icon,
+                colorBrightness: Brightness.dark,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8.0),
+                  ),
+                ),
+              )
+            : RaisedButton(
+                onPressed: onTap,
+                child: child,
+                color: backgroundColor ?? Theme.of(context).primaryColor,
+                colorBrightness: Brightness.dark,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8.0),
+                  ),
                 ),
               ),
-            )
-          : RaisedButton(
-              onPressed: onTap,
-              child: child,
-              color: backgroundColor ?? Theme.of(context).primaryColor,
-              colorBrightness: Brightness.dark,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(0.0),
-                ),
-              ),
-            ),
+      ),
     );
   }
 }

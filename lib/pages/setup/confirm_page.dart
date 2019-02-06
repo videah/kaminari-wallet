@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/pages/setup/success_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 
@@ -65,7 +66,11 @@ class ConfirmPage extends StatelessWidget {
                   icon: Icon(Icons.check),
                   backgroundColor: Colors.green,
                   child: Text("Yes"),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SuccessPage())
+                    );
+                  },
                 )
               ],
             );
