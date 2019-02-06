@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kaminari_wallet/utils/lndconnect.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
+import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 
 class ConfirmPage extends StatelessWidget {
-
-  final LNDConnectInfo lnd;
-
-  const ConfirmPage({Key key, this.lnd}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,10 +19,21 @@ class ConfirmPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Expanded(
-            child: ListView(
-              children: <Widget>[],
-            ),
+          StreamBuilder(
+            stream: BlocProvider.of<ConfirmBloc>(context).info,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: ListView(
+                    children: <Widget>[],
+                  ),
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }
           )
         ],
       ),

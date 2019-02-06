@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/pages/setup/confirm_page.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
@@ -64,7 +66,10 @@ class ConnectMethodPage extends StatelessWidget {
       var lnd = LNDConnect.decode(uri.text);
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ConfirmPage(lnd: lnd),
+          builder: (context) => BlocProvider(
+            bloc: ConfirmBloc(lnd),
+            child: ConfirmPage(),
+          ),
         ),
       );
     } catch (e) {
@@ -86,7 +91,10 @@ class ConnectMethodPage extends StatelessWidget {
       var lnd = LNDConnect.decode(qr);
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ConfirmPage(lnd: lnd),
+          builder: (context) => BlocProvider(
+            bloc: ConfirmBloc(lnd),
+            child: ConfirmPage(),
+          ),
         ),
       );
     } on PlatformException catch (e) {
