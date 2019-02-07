@@ -20,7 +20,7 @@ class InitialRoutingPageState extends State<InitialRoutingPage> {
         BlocProvider.of<InitialRoutingBloc>(context).route.listen(
           (route) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
+              InitialPageRoute(
                 builder: (context) => route == InitialRoute.home
                     ? MainWalletPage()
                     : WelcomePage(),
@@ -37,5 +37,17 @@ class InitialRoutingPageState extends State<InitialRoutingPage> {
     return Scaffold(
       body: Container(),
     );
+  }
+}
+
+class InitialPageRoute<T> extends MaterialPageRoute<T> {
+  InitialPageRoute({WidgetBuilder builder, RouteSettings settings})
+      : super(builder: builder, settings: settings);
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return FadeUpwardsPageTransitionsBuilder()
+        .buildTransitions(this, context, animation, secondaryAnimation, child);
   }
 }
