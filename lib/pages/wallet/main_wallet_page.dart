@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
+import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 
 class MainWalletPage extends StatelessWidget {
   @override
@@ -15,7 +17,6 @@ class MainWalletPage extends StatelessWidget {
                 floating: false,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
-                elevation: 0.0,
                 leading: IconButton(
                   icon: Icon(FontAwesomeIcons.addressBook),
                   onPressed: () {},
@@ -53,6 +54,20 @@ class MainWalletPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomButtonBar(
+        children: <Widget>[
+          FillIconButton(
+            icon: Icon(Icons.call_received),
+            child: Text("Receive"),
+            onTap: () {},
+          ),
+          FillIconButton(
+            icon: Icon(Icons.call_made),
+            child: Text("Send"),
+            onTap: () {},
+          )
+        ],
       ),
     );
   }

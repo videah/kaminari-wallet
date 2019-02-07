@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:convert/convert.dart';
@@ -17,6 +18,9 @@ class ConfirmBloc extends Bloc {
   final _infoSubject = BehaviorSubject();
   Stream get info => _infoSubject.stream;
 
+  final _statusStream = StreamController();
+  Stream get status => _statusStream.stream;
+
   void _setupLND() {
     final decodedCert = base64UrlToBase64(lndOptions.cert);
     final formattedCert = formatCertificateString(decodedCert);
@@ -28,25 +32,30 @@ class ConfirmBloc extends Bloc {
 
     lnd = LightningClient(
       ClientChannel(
-          lndOptions.host,
-          port: lndOptions.port,
-          options: ChannelOptions(
-              credentials: ChannelCredentials.secure(
-                certificates: certificate,
-                onBadCertificate: (cert, host) {
-                  return true;
-                },
-              )
-          )
+        lndOptions.host,
+        port: lndOptions.port,
+        options: ChannelOptions(
+          credentials: ChannelCredentials.secure(
+            certificates: certificate,
+            // TODO: This is temporary, remove before release.
+            onBadCertificate: (cert, host) {
+              return true;
+            },
+          ),
+        ),
       ),
       options: CallOptions(metadata: metadata),
     );
   }
 
   void _getInfoFromNode() async {
-    var response = await lnd.getInfo(GetInfoRequest());
-    _nodeInfo = response;
-    _infoSubject.add(_nodeInfo);
+    try {
+      var response = await lnd.getInfo(GetInfoRequest());
+      _nodeInfo = response;
+      _infoSubject.add(_nodeInfo);
+    } catch (e) {
+      _statusStream.add(e);
+    }
   }
 
   ConfirmBloc(this.lndOptions) {
@@ -57,6 +66,7 @@ class ConfirmBloc extends Bloc {
   @override
   void dispose() {
     _infoSubject.close();
+    _statusStream.close();
     lnd.closeChannel(CloseChannelRequest());
   }
 }
