@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:kaminari_wallet/utils/lndconnect.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
 class MainnetWarningBloc extends Bloc {
+  final LNDConnectInfo lndOptions;
   bool _understood = false;
 
   final _understoodSubject = BehaviorSubject<bool>(seedValue: false);
@@ -17,7 +19,7 @@ class MainnetWarningBloc extends Bloc {
     _understoodSubject.add(_understood);
   }
 
-  MainnetWarningBloc() {
+  MainnetWarningBloc(this.lndOptions) {
     _understoodController.stream.listen(_handleCheckbox);
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/mainnet_warning_bloc.dart';
+import 'package:kaminari_wallet/blocs/success_bloc.dart';
 import 'package:kaminari_wallet/pages/setup/success_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
@@ -8,6 +9,7 @@ import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 class MainnetWarningPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<MainnetWarningBloc>(context);
     return Theme(
       data: ThemeData(
         brightness: Brightness.dark,
@@ -63,8 +65,7 @@ class MainnetWarningPage extends StatelessWidget {
                       ],
                     ),
                     StreamBuilder<Object>(
-                      stream: BlocProvider.of<MainnetWarningBloc>(context)
-                          .understood,
+                      stream: bloc.understood,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return CheckboxListTile(
@@ -75,9 +76,7 @@ class MainnetWarningPage extends StatelessWidget {
                                 "With great power comes great responsibility"),
                             value: snapshot.data,
                             onChanged: (value) {
-                              BlocProvider.of<MainnetWarningBloc>(context)
-                                  .checkbox
-                                  .add(value);
+                              bloc.checkbox.add(value);
                             },
                           );
                         } else {
@@ -92,7 +91,7 @@ class MainnetWarningPage extends StatelessWidget {
           },
         ),
         bottomNavigationBar: StreamBuilder<Object>(
-          stream: BlocProvider.of<MainnetWarningBloc>(context).understood,
+          stream: bloc.understood,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return BottomButtonBar(
@@ -102,8 +101,14 @@ class MainnetWarningPage extends StatelessWidget {
                     backgroundColor: Colors.deepPurple,
                     enabled: snapshot.data,
                     onTap: () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => SuccessPage()));
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                                bloc: SuccessBloc(bloc.lndOptions),
+                                child: SuccessPage(),
+                              ),
+                        ),
+                      );
                     },
                   ),
                 ],

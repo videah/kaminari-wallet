@@ -49,48 +49,50 @@ class ConfirmPageState extends State<ConfirmPage> {
 
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<ConfirmBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Setup"),
       ),
       body: StreamBuilder<Object>(
-          stream: BlocProvider.of<ConfirmBloc>(context).info,
-          builder: (context, snapshot) {
-            GetInfoResponse node = snapshot.data;
-            if (snapshot.hasData) {
-              return Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      "Does this look right?",
-                      textAlign: TextAlign.center,
-                    ),
+        stream: bloc.info,
+        builder: (context, snapshot) {
+          GetInfoResponse node = snapshot.data;
+          if (snapshot.hasData) {
+            return Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Does this look right?",
+                    textAlign: TextAlign.center,
                   ),
-                  Expanded(
-                    child: ListView(
-                      children: <Widget>[
-                        ListTile(
-                          title: Text("Name"),
-                          subtitle: Text("${node.alias}"),
-                        ),
-                        ListTile(
-                          title: Text("Public Key"),
-                          subtitle: Text("${node.identityPubkey}"),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+                ),
+                Expanded(
+                  child: ListView(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text("Name"),
+                        subtitle: Text("${node.alias}"),
+                      ),
+                      ListTile(
+                        title: Text("Public Key"),
+                        subtitle: Text("${node.identityPubkey}"),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
       bottomNavigationBar: StreamBuilder(
-        stream: BlocProvider.of<ConfirmBloc>(context).info,
+        stream: bloc.info,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return BottomButtonBar(
@@ -107,12 +109,16 @@ class ConfirmPageState extends State<ConfirmPage> {
                   child: Text("Yes"),
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) {
-                        return BlocProvider(
-                          bloc: MainnetWarningBloc(),
-                          child: MainnetWarningPage(),
-                        );
-                      }),
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return BlocProvider(
+                            bloc: MainnetWarningBloc(
+                              bloc.lndOptions,
+                            ),
+                            child: MainnetWarningPage(),
+                          );
+                        },
+                      ),
                     );
                   },
                 )
