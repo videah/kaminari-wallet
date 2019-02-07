@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:grpc/grpc.dart';
 import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
+import 'package:kaminari_wallet/blocs/mainnet_warning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/pages/setup/mainnet_warning_page.dart';
 import 'package:kaminari_wallet/pages/setup/success_page.dart';
@@ -106,7 +107,12 @@ class ConfirmPageState extends State<ConfirmPage> {
                   child: Text("Yes"),
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => MainnetWarningPage()),
+                      MaterialPageRoute(builder: (context) {
+                        return BlocProvider(
+                          bloc: MainnetWarningBloc(),
+                          child: MainnetWarningPage(),
+                        );
+                      }),
                     );
                   },
                 )

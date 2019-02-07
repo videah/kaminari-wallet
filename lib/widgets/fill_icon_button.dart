@@ -6,15 +6,17 @@ class FillIconButton extends StatelessWidget {
   final Icon icon;
   final Color backgroundColor;
   final Color textColor;
+  final bool enabled;
 
-  const FillIconButton(
-      {Key key,
-      this.onTap,
-      this.icon,
-      this.backgroundColor,
-      this.child,
-      this.textColor})
-      : super(key: key);
+  const FillIconButton({
+    Key key,
+    this.onTap,
+    this.icon,
+    this.backgroundColor,
+    this.child,
+    this.textColor,
+    this.enabled = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class FillIconButton extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: icon != null
             ? RaisedButton.icon(
-                onPressed: onTap,
+                onPressed: enabled ? onTap : null,
                 color: backgroundColor ?? Theme.of(context).primaryColor,
                 label: child,
                 icon: icon,
@@ -35,7 +37,7 @@ class FillIconButton extends StatelessWidget {
                 ),
               )
             : RaisedButton(
-                onPressed: onTap,
+                onPressed: enabled ? onTap : null,
                 child: child,
                 color: backgroundColor ?? Theme.of(context).primaryColor,
                 colorBrightness: Brightness.dark,
