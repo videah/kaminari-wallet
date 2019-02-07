@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaminari_wallet/pages/settings/settings_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 
@@ -24,7 +25,11 @@ class MainWalletPage extends StatelessWidget {
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.settings),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SettingsPage())
+                      );
+                    },
                   )
                 ],
                 flexibleSpace: FlexibleSpaceBar(
