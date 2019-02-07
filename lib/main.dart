@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kaminari_wallet/pages/setup/welcome_page.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/initial_routing_bloc.dart';
+import 'package:kaminari_wallet/pages/initial_routing_page.dart';
 
 void main() => runApp(KaminariApp());
 
@@ -11,7 +13,10 @@ class KaminariApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: WelcomePage(),
+      home: BlocProvider(
+        bloc: InitialRoutingBloc(),
+        child: InitialRoutingPage(),
+      ),
     );
   }
 }

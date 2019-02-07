@@ -23,9 +23,10 @@ class ConfirmPageState extends State<ConfirmPage> {
     Future.delayed(Duration(milliseconds: 10)).then((_) {
       BlocProvider.of<ConfirmBloc>(context).status.listen(
         (error) {
+          print(error);
           var errorMessage = error.code == GrpcError.unavailable().code
               ? "Connection to node unavailable."
-              : "Oops";
+              : "Unknown Error Occured";
           Navigator.of(context).pop();
           showDialog(
             context: context,
