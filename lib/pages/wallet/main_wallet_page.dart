@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/pages/settings/settings_page.dart';
 import 'package:kaminari_wallet/pages/wallet/tabs/transactions_tab.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
@@ -8,6 +10,7 @@ import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 class MainWalletPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var bloc = BlocProvider.of<MainWalletBloc>(context);
     return Scaffold(
       body: DefaultTabController(
         length: 2,
@@ -18,7 +21,16 @@ class MainWalletPage extends StatelessWidget {
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 child: SliverAppBar(
                   expandedHeight: 0.0,
-                  title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
+                  title: StreamBuilder<Object>(
+                    stream: bloc.balance,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text("${snapshot.data}", style: TextStyle(fontSize: 24.0),);
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }
+                  ),
                   centerTitle: true,
                   floating: false,
                   pinned: true,
