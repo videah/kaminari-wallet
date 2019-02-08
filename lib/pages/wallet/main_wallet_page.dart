@@ -14,34 +14,37 @@ class MainWalletPage extends StatelessWidget {
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
-              SliverAppBar(
-                expandedHeight: 150.0,
-                title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
-                centerTitle: true,
-                floating: false,
-                pinned: true,
-                forceElevated: innerBoxIsScrolled,
-                leading: IconButton(
-                  icon: Icon(FontAwesomeIcons.addressBook),
-                  onPressed: () {},
-                ),
-                bottom: TabBar(
-                  tabs: <Widget>[
-                    Tab(text: "Transactions"),
-                    Tab(text: "Invoices"),
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                child: SliverAppBar(
+                  expandedHeight: 150.0,
+                  title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
+                  centerTitle: true,
+                  floating: false,
+                  pinned: true,
+                  forceElevated: innerBoxIsScrolled,
+                  leading: IconButton(
+                    icon: Icon(FontAwesomeIcons.addressBook),
+                    onPressed: () {},
+                  ),
+                  bottom: TabBar(
+                    tabs: <Widget>[
+                      Tab(text: "Transactions"),
+                      Tab(text: "Invoices"),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => SettingsPage())
+                        );
+                      },
+                    )
                   ],
-                ),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => SettingsPage())
-                      );
-                    },
-                  )
-                ],
-                flexibleSpace: FlexibleSpaceBar(
+                  flexibleSpace: FlexibleSpaceBar(
+                  ),
                 ),
               ),
             ];

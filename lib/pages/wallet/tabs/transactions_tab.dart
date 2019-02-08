@@ -6,6 +6,9 @@ class TransactionsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
         SliverPadding(
           padding: EdgeInsets.all(0.0),
           sliver: SliverList(
