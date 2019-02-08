@@ -20,6 +20,11 @@ class MainWalletBloc extends LightningBloc {
     await lightning.initialize();
     _syncBalance();
     _syncTransactions();
+    lightning.client
+        .subscribeTransactions(GetTransactionsRequest())
+        .listen((tx) {
+      _syncTransactions();
+    });
   }
 
   void _syncBalance() async {
