@@ -25,9 +25,15 @@ class TransactionsTab extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return Container();
+                      return TransactionTile(
+                        title: Text("Satoshi Nakamoto", style: TextStyle(fontWeight: FontWeight.bold),),
+                        subtitle: Text("Testing out the lightning network"),
+                        direction: TxDirection.receiving,
+                        image: NetworkImage(
+                          "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
+                        ),
+                      );
                     },
-                    childCount: 4,
                   ),
                 ),
               ),

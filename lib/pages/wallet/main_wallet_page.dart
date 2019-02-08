@@ -17,21 +17,21 @@ class MainWalletPage extends StatelessWidget {
               SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 child: SliverAppBar(
-                  expandedHeight: 150.0,
+                  expandedHeight: 0.0,
                   title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
                   centerTitle: true,
                   floating: false,
                   pinned: true,
-                  forceElevated: innerBoxIsScrolled,
-                  leading: IconButton(
-                    icon: Icon(FontAwesomeIcons.addressBook),
-                    onPressed: () {},
-                  ),
+                  forceElevated: true,
                   bottom: TabBar(
                     tabs: <Widget>[
                       Tab(text: "Transactions"),
                       Tab(text: "Invoices"),
                     ],
+                  ),
+                  leading: IconButton(
+                    icon: Icon(FontAwesomeIcons.addressBook),
+                    onPressed: () {},
                   ),
                   actions: <Widget>[
                     IconButton(
@@ -43,8 +43,6 @@ class MainWalletPage extends StatelessWidget {
                       },
                     )
                   ],
-                  flexibleSpace: FlexibleSpaceBar(
-                  ),
                 ),
               ),
             ];
