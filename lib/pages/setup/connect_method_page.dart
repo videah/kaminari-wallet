@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +8,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/pages/setup/confirm_page.dart';
+import 'package:kaminari_wallet/utils/certificate.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
 class ConnectMethodPage extends StatelessWidget {
@@ -62,8 +66,13 @@ class ConnectMethodPage extends StatelessWidget {
   _connectFromClipboard(context) async {
     try {
       Scaffold.of(context).removeCurrentSnackBar();
-      var uri = await Clipboard.getData(Clipboard.kTextPlain);
-      var lnd = LNDConnect.decode(uri.text);
+      final uri = await Clipboard.getData(Clipboard.kTextPlain);
+      final lnd = LNDConnect.decode(uri.text);
+      final decodedCert = base64UrlToBase64(lnd.cert);
+      final formattedCert = formatCertificateString(decodedCert);
+      final certificate = utf8.encode(formattedCert);
+      final b64Mac = base64Url.decode(lnd.macaroon);
+      final macaroon = hex.encode(b64Mac);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => BlocProvider(

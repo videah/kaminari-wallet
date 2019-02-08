@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kaminari_wallet/pages/settings/settings_page.dart';
+import 'package:kaminari_wallet/pages/wallet/tabs/transactions_tab.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 
@@ -15,12 +16,20 @@ class MainWalletPage extends StatelessWidget {
             return <Widget>[
               SliverAppBar(
                 expandedHeight: 150.0,
+                title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
+                centerTitle: true,
                 floating: false,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
                 leading: IconButton(
                   icon: Icon(FontAwesomeIcons.addressBook),
                   onPressed: () {},
+                ),
+                bottom: TabBar(
+                  tabs: <Widget>[
+                    Tab(text: "Transactions"),
+                    Tab(text: "Invoices"),
+                  ],
                 ),
                 actions: <Widget>[
                   IconButton(
@@ -33,29 +42,13 @@ class MainWalletPage extends StatelessWidget {
                   )
                 ],
                 flexibleSpace: FlexibleSpaceBar(
-                  title: Text("123456789 sat", style: TextStyle(fontSize: 24.0),),
-                  centerTitle: true,
                 ),
               ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: SliverTabBarDelegate(
-                  tabBar: TabBar(
-                    labelColor: Theme.of(context).accentColor,
-                    tabs: <Widget>[
-                      Tab(text: "Transactions"),
-                      Tab(text: "Invoices"),
-                    ],
-                  )
-                ),
-              )
             ];
           },
           body: TabBarView(
             children: <Widget>[
-              Center(
-                child: Text("Hello World"),
-              )
+              TransactionsTab(),
             ],
           ),
         ),
@@ -91,7 +84,8 @@ class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new Container(
+    return Container(
+      color: Theme.of(context).primaryColor,
       child: Column(
         children: <Widget>[
           Divider(height: 0.0),
