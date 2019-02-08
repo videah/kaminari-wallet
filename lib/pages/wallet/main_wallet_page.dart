@@ -71,34 +71,3 @@ class MainWalletPage extends StatelessWidget {
     );
   }
 }
-
-class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-
-  SliverTabBarDelegate({this.tabBar});
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Theme.of(context).primaryColor,
-      child: Column(
-        children: <Widget>[
-          Divider(height: 0.0),
-          tabBar,
-          Divider(height: 0.0),
-        ],
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(SliverTabBarDelegate oldDelegate) {
-    return false;
-  }
-}
