@@ -54,18 +54,24 @@ class MainWalletPage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomButtonBar(
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          FillIconButton(
-            icon: Icon(Icons.call_received),
-            child: Text("Receive"),
-            onTap: () {},
+          Divider(height: 0.0,),
+          BottomButtonBar(
+            children: <Widget>[
+              FillIconButton(
+                icon: Icon(Icons.call_received),
+                child: Text("Receive"),
+                onTap: () {},
+              ),
+              FillIconButton(
+                icon: Icon(Icons.call_made),
+                child: Text("Send"),
+                onTap: () {},
+              )
+            ],
           ),
-          FillIconButton(
-            icon: Icon(Icons.call_made),
-            child: Text("Send"),
-            onTap: () {},
-          )
         ],
       ),
     );
