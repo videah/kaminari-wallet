@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/initial_routing_bloc.dart';
+import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/pages/setup/welcome_page.dart';
 import 'package:kaminari_wallet/pages/wallet/main_wallet_page.dart';
 
@@ -22,7 +23,10 @@ class InitialRoutingPageState extends State<InitialRoutingPage> {
             Navigator.of(context).pushReplacement(
               InitialPageRoute(
                 builder: (context) => route == InitialRoute.home
-                    ? MainWalletPage()
+                    ? BlocProvider(
+                        bloc: MainWalletBloc(),
+                        child: MainWalletPage(),
+                      )
                     : WelcomePage(),
               ),
             );

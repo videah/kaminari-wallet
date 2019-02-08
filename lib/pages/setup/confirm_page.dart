@@ -5,7 +5,6 @@ import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/blocs/mainnet_warning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/pages/setup/mainnet_warning_page.dart';
-import 'package:kaminari_wallet/pages/setup/success_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 
