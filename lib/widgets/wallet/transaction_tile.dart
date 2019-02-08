@@ -9,8 +9,9 @@ class TransactionTile extends StatelessWidget {
   final ImageProvider image;
   final Widget subtitle;
   final TxDirection direction;
+  final int amount;
 
-  const TransactionTile({Key key, this.title, this.image, this.subtitle, this.direction}) : super(key: key);
+  const TransactionTile({Key key, this.title, this.image, this.subtitle, this.direction, this.amount}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,14 @@ class TransactionTile extends StatelessWidget {
       title: title ?? Text("Unknown Payment"),
       subtitle: subtitle ?? null,
       trailing: AmountLabel(
-        text: "1337",
+        text: amount.toString(),
         direction: direction,
       ),
       leading: CircleAvatar(
-        backgroundImage: image ?? null,
+//        backgroundImage: image ?? null,
+        child: Icon(FontAwesomeIcons.bitcoin),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.orange,
       ),
       onTap: () {},
     );
