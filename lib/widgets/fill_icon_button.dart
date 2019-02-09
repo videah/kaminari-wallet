@@ -26,7 +26,7 @@ class FillIconButton extends StatelessWidget {
         child: icon != null
             ? RaisedButton.icon(
                 onPressed: enabled ? onTap : null,
-                color: backgroundColor ?? Theme.of(context).primaryColor,
+                color: backgroundColor ?? Theme.of(context).accentColor,
                 label: child,
                 icon: icon,
                 colorBrightness: Brightness.dark,
