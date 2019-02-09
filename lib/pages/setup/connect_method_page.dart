@@ -8,7 +8,6 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/pages/setup/confirm_page.dart';
-import 'package:kaminari_wallet/utils/certificate.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
 class ConnectMethodPage extends StatelessWidget {

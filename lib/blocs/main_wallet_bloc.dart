@@ -21,6 +21,9 @@ class MainWalletBloc extends LightningBloc {
   final _invoicesSubject = BehaviorSubject<List<Invoice>>();
   Stream get invoices => _invoicesSubject.stream;
 
+  final _newTransactionSubject = BehaviorSubject();
+  Stream get newTransaction => _newTransactionSubject.stream;
+
   MainWalletBloc() {
     _setup();
   }
@@ -34,9 +37,7 @@ class MainWalletBloc extends LightningBloc {
     await _syncInvoices();
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
-        .listen((tx) {
-      _syncTransactions();
-    });
+        .listen(_newTransactionSubject.add);
   }
 
   void _syncBalance() async {
@@ -87,6 +88,7 @@ class MainWalletBloc extends LightningBloc {
     _transactionSubject.close();
     _historySubject.close();
     _invoicesSubject.close();
+    _newTransactionSubject.close();
     lightning.client.closeChannel(CloseChannelRequest());
   }
 }
