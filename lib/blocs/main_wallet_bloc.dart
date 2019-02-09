@@ -7,6 +7,7 @@ class MainWalletBloc extends LightningBloc {
   List<Transaction> _transactions;
   List<Payment> _payments;
   List<dynamic> _history = [];
+  List<Invoice> _invoices;
 
   final _balanceSubject = BehaviorSubject<String>(seedValue: "0 sat");
   Stream get balance => _balanceSubject.stream;
@@ -16,6 +17,9 @@ class MainWalletBloc extends LightningBloc {
 
   final _historySubject = BehaviorSubject<List<dynamic>>();
   Stream get history => _historySubject.stream;
+
+  final _invoicesSubject = BehaviorSubject<List<Invoice>>();
+  Stream get invoices => _invoicesSubject.stream;
 
   MainWalletBloc() {
     _setup();
@@ -27,6 +31,7 @@ class MainWalletBloc extends LightningBloc {
     await _syncTransactions();
     await _syncPayments();
     await _sortHistory();
+    await _syncInvoices();
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
         .listen((tx) {
@@ -70,11 +75,18 @@ class MainWalletBloc extends LightningBloc {
     _historySubject.add(_history);
   }
 
+  Future _syncInvoices() async {
+    var response = await lightning.client.listInvoices(ListInvoiceRequest());
+    _invoices = response.invoices.toList();
+    _invoicesSubject.add(_invoices);
+  }
+
   @override
   void dispose() {
     _balanceSubject.close();
     _transactionSubject.close();
     _historySubject.close();
+    _invoicesSubject.close();
     lightning.client.closeChannel(CloseChannelRequest());
   }
 }

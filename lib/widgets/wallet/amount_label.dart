@@ -20,14 +20,16 @@ class AmountLabel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Icon(
-            icon,
-            color: color,
-            size: 12.0,
-          ),
-        ),
+        icon != null
+            ? Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 12.0,
+                ),
+              )
+            : Container(),
         RichText(
           text: TextSpan(
             text: text.replaceAll("-", ""),
