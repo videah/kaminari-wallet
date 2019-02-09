@@ -40,7 +40,9 @@ class TransactionsTab extends StatelessWidget {
                               ),
                               subtitle: Text("Chain Transaction"),
                               amount: tx.amount.toInt(),
-                              direction: tx.amount < 0 ? TxDirection.sending : TxDirection.receiving,
+                              direction: tx.amount < 0
+                                  ? TxDirection.sending
+                                  : TxDirection.receiving,
                               image: NetworkImage(
                                 "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
                               ),
@@ -52,7 +54,7 @@ class TransactionsTab extends StatelessWidget {
                                 "Anonymous",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              subtitle: Text("${tx.paymentHash}"),
+                              subtitle: Text("Lightning Transaction"),
                               amount: tx.value.toInt(),
                               direction: TxDirection.sending,
                               image: NetworkImage(

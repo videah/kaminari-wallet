@@ -16,7 +16,7 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: title ?? Text("Unknown Payment"),
+      title: title ?? "Unknown",
       subtitle: subtitle ?? null,
       trailing: AmountLabel(
         text: amount.toString(),
