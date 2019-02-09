@@ -40,7 +40,7 @@ class MainWalletBloc extends LightningBloc {
       GetTransactionsRequest(),
     );
     _transactions = response.transactions;
-    _transactionSubject.add(_transactions);
+    _transactionSubject.add(_transactions.reversed.toList());
   }
 
   @override
