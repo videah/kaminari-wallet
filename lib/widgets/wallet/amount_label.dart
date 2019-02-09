@@ -10,6 +10,7 @@ class AmountLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var color = direction == TxDirection.receiving ? Colors.green : Colors.red;
     var icon = direction == TxDirection.receiving
         ? FontAwesomeIcons.plus
         : FontAwesomeIcons.minus;
@@ -23,13 +24,13 @@ class AmountLabel extends StatelessWidget {
           padding: const EdgeInsets.all(4.0),
           child: Icon(
             icon,
-            color: Colors.green,
+            color: color,
             size: 12.0,
           ),
         ),
         RichText(
           text: TextSpan(
-            text: text,
+            text: text.replaceAll("-", ""),
             style: Theme.of(context)
                 .textTheme
                 .body1
