@@ -7,6 +7,7 @@ import 'package:kaminari_wallet/pages/settings/settings_page.dart';
 import 'package:kaminari_wallet/pages/wallet/tabs/transactions_tab.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
+import 'package:kaminari_wallet/widgets/wallet/send_modal.dart';
 
 class MainWalletPage extends StatelessWidget {
   @override
@@ -85,7 +86,11 @@ class MainWalletPage extends StatelessWidget {
               FillIconButton(
                 icon: Icon(Icons.call_made),
                 child: Text("Send"),
-                onTap: () {},
+                onTap: () {
+                  showModalBottomSheet(context: (context), builder: (context) {
+                    return SendModal();
+                  });
+                },
               )
             ],
           ),
