@@ -16,8 +16,8 @@ String formatCertificateString(cert) {
 String base64UrlToBase64(String base64) {
   base64 = base64.replaceAll("-", "+");
   base64 = base64.replaceAll("_", "/");
-  if (base64.length % 4 != 0) {
-    base64 = base64.padRight(4 - base64.length % 4, "=");
+  while (base64.length % 4 != 0) {
+    base64 = "$base64=";
   }
   return base64;
 }

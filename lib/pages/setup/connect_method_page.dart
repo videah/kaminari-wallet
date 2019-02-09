@@ -67,21 +67,22 @@ class ConnectMethodPage extends StatelessWidget {
     try {
       Scaffold.of(context).removeCurrentSnackBar();
       final uri = await Clipboard.getData(Clipboard.kTextPlain);
-      final lnd = LNDConnect.decode(uri.text);
-      final decodedCert = base64UrlToBase64(lnd.cert);
-      final formattedCert = formatCertificateString(decodedCert);
-      final certificate = utf8.encode(formattedCert);
-      final b64Mac = base64Url.decode(lnd.macaroon);
-      final macaroon = hex.encode(b64Mac);
+      final lndOptions = LNDConnect.decode(uri.text);
+
+      final certificate = utf8.encode(lndOptions.cert);
+      final macaroon = hex.encode(base64.decode(lndOptions.macaroon));
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
-            bloc: ConfirmBloc(lnd),
+            bloc: ConfirmBloc(lndOptions),
             child: ConfirmPage(),
           ),
         ),
       );
-    } catch (e) {
+    } catch (e, s) {
+      print(e);
+      print(s);
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: ListTile(

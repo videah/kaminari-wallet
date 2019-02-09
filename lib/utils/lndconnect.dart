@@ -1,11 +1,14 @@
+import 'package:kaminari_wallet/utils/certificate.dart';
+
 class LNDConnectInfo {
   final Uri uri;
 
   get host => uri.host;
   get port => uri.port;
   get address => "${uri.host}:${uri.port}";
-  get cert => uri.queryParameters["cert"];
-  get macaroon => uri.queryParameters["macaroon"];
+  get cert =>
+      formatCertificateString(base64UrlToBase64(uri.queryParameters["cert"]));
+  get macaroon => base64UrlToBase64(uri.queryParameters["macaroon"]);
 
   LNDConnectInfo({this.uri});
 
@@ -24,8 +27,8 @@ class LNDConnect {
   static String encode(LNDConnectInfo info) {
     String urnScheme = "lndconnect";
     var query = Uri(queryParameters: {
-      "cert": info.cert,
-      "macaroon": info.macaroon
+      "cert": info.uri.queryParameters["cert"],
+      "macaroon": info.uri.queryParameters["macaroon"],
     }).toString();
     return "$urnScheme://${info.address}$query";
   }
