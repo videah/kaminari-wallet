@@ -27,6 +27,7 @@ class TransactionsTabState extends State<TransactionsTab> {
   }
 
   void _addTransaction(var tx) {
+    print("new $tx");
     _transactions.insert(0, tx);
     _listKey.currentState.insertItem(0, duration: Duration(milliseconds: 300));
   }
@@ -69,16 +70,43 @@ class TransactionsTabState extends State<TransactionsTab> {
                   );
                 } else if (_transactions[index] is Payment) {
                   Payment tx = _transactions[index];
-                  return TransactionTile(
-                    title: Text(
-                      "Anonymous",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: TransactionTile(
+                        title: Text(
+                          "Anonymous",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text("Lightning Transaction"),
+                        amount: tx.value.toInt(),
+                        direction: TxDirection.sending,
+                        image: NetworkImage(
+                          "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
+                        ),
+                      ),
                     ),
-                    subtitle: Text("Lightning Transaction"),
-                    amount: tx.value.toInt(),
-                    direction: TxDirection.sending,
-                    image: NetworkImage(
-                      "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
+                  );
+                } else if (_transactions[index] is Invoice) {
+                  Invoice tx = _transactions[index];
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: TransactionTile(
+                        title: Text(
+                          "Anonymous",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          tx.memo.isNotEmpty
+                              ? tx.memo
+                              : "Lightning Transaction",
+                        ),
+                        amount: tx.amtPaidSat.toInt(),
+                        direction: TxDirection.receiving,
+                      ),
                     ),
                   );
                 }

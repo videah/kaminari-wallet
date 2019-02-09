@@ -33,11 +33,14 @@ class MainWalletBloc extends LightningBloc {
     _syncBalance();
     await _syncTransactions();
     await _syncPayments();
-    await _sortHistory();
     await _syncInvoices();
+    await _sortHistory();
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
         .listen(_newTransactionSubject.add);
+    lightning.client.subscribeInvoices((InvoiceSubscription())).listen((invoice) {
+      if (invoice.settled) _newTransactionSubject.add(invoice);
+    });
   }
 
   void _syncBalance() async {
@@ -63,6 +66,13 @@ class MainWalletBloc extends LightningBloc {
     _history.addAll(_payments);
   }
 
+  Future _syncInvoices() async {
+    var response = await lightning.client.listInvoices(ListInvoiceRequest());
+    _invoices = response.invoices.toList();
+    _history.addAll(_invoices.where((invoice) => invoice.settled));
+    _invoicesSubject.add(_invoices);
+  }
+
   Future _sortHistory() async {
     _history.sort((a, b) {
       var aTimestamp = a is Transaction
@@ -74,12 +84,6 @@ class MainWalletBloc extends LightningBloc {
       return aTimestamp < bTimestamp ? 1 : aTimestamp > bTimestamp ? -1 : 0;
     });
     _historySubject.add(_history);
-  }
-
-  Future _syncInvoices() async {
-    var response = await lightning.client.listInvoices(ListInvoiceRequest());
-    _invoices = response.invoices.toList();
-    _invoicesSubject.add(_invoices);
   }
 
   @override
