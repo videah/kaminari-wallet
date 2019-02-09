@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
+import 'package:kaminari_wallet/pages/contacts/contact_book_page.dart';
 import 'package:kaminari_wallet/pages/settings/settings_page.dart';
 import 'package:kaminari_wallet/pages/wallet/tabs/transactions_tab.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
@@ -43,7 +44,11 @@ class MainWalletPage extends StatelessWidget {
                   ),
                   leading: IconButton(
                     icon: Icon(FontAwesomeIcons.addressBook),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => ContactBookPage())
+                      );
+                    },
                   ),
                   actions: <Widget>[
                     IconButton(
