@@ -6,10 +6,10 @@ class MainWalletBloc extends LightningBloc {
   String _balance;
   List<Transaction> _transactions;
   List<Payment> _payments;
-  List<dynamic> _history = [];
   List<Invoice> _invoices;
+  List<dynamic> _history = [];
 
-  final _balanceSubject = BehaviorSubject<String>(seedValue: "0 sat");
+  final _balanceSubject = BehaviorSubject<String>();
   Stream get balance => _balanceSubject.stream;
 
   final _transactionSubject = BehaviorSubject<List<Transaction>>();
@@ -38,16 +38,25 @@ class MainWalletBloc extends LightningBloc {
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
         .listen(_newTransactionSubject.add);
-    lightning.client.subscribeInvoices((InvoiceSubscription())).listen((invoice) {
-      if (invoice.settled) _newTransactionSubject.add(invoice);
+    lightning.client
+        .subscribeInvoices((InvoiceSubscription()))
+        .listen((invoice) {
+      if (invoice.settled) {
+        _newTransactionSubject.add(invoice);
+        _syncBalance();
+      }
     });
   }
 
   void _syncBalance() async {
-    var response = await lightning.client.walletBalance(
+    var chainResponse = await lightning.client.walletBalance(
       WalletBalanceRequest(),
     );
-    _balance = response.confirmedBalance.toString();
+    var lightningResponse = await lightning.client.channelBalance(
+      ChannelBalanceRequest(),
+    );
+    _balance =
+        (chainResponse.totalBalance + lightningResponse.balance).toString();
     _balanceSubject.add("$_balance sat");
   }
 

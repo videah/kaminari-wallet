@@ -27,7 +27,6 @@ class TransactionsTabState extends State<TransactionsTab> {
   }
 
   void _addTransaction(var tx) {
-    print("new $tx");
     _transactions.insert(0, tx);
     _listKey.currentState.insertItem(0, duration: Duration(milliseconds: 300));
   }
@@ -53,10 +52,7 @@ class TransactionsTabState extends State<TransactionsTab> {
                     child: FadeTransition(
                       opacity: animation,
                       child: TransactionTile(
-                        title: Text(
-                          "Anonymous",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        title: "Anonymous",
                         subtitle: Text("Chain Transaction"),
                         amount: tx.amount.toInt(),
                         direction: tx.amount < 0
@@ -75,11 +71,9 @@ class TransactionsTabState extends State<TransactionsTab> {
                     child: FadeTransition(
                       opacity: animation,
                       child: TransactionTile(
-                        title: Text(
-                          "Anonymous",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        title: "Anonymous",
                         subtitle: Text("Lightning Transaction"),
+                        userId: tx.path.last,
                         amount: tx.value.toInt(),
                         direction: TxDirection.sending,
                         image: NetworkImage(
@@ -95,10 +89,7 @@ class TransactionsTabState extends State<TransactionsTab> {
                     child: FadeTransition(
                       opacity: animation,
                       child: TransactionTile(
-                        title: Text(
-                          "Anonymous",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        title: "Anonymous",
                         subtitle: Text(
                           tx.memo.isNotEmpty
                               ? tx.memo
