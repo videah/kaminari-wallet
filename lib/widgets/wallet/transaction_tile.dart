@@ -53,14 +53,11 @@ class TransactionTile extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 25,
-                child: userId != null
-                    ? Identicon(userId)
-                    : Center(
-                        child: Text("?"),
-                      ),
-              ),
+              child: userId != null
+                  ? Identicon(userId)
+                  : Center(
+                      child: Text("?"),
+                    ),
             ),
           ),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:grpc/grpc.dart';
+import 'package:jdenticon_flutter/jdenticon_flutter.dart';
 import 'package:kaminari_wallet/blocs/confirm_bloc.dart';
 import 'package:kaminari_wallet/blocs/mainnet_warning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
@@ -71,6 +72,25 @@ class ConfirmPageState extends State<ConfirmPage> {
                 Expanded(
                   child: ListView(
                     children: <Widget>[
+                      Container(
+                        width: 150,
+                        height: 150,
+                        decoration: new BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            new BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              offset: Offset(0.0, 2.0),
+                              blurRadius: 5.0,
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Identicon(node.identityPubkey),
+                        ),
+                      ),
                       ListTile(
                         title: Text("Name"),
                         subtitle: Text("${node.alias}"),
