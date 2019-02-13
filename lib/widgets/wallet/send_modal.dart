@@ -9,7 +9,7 @@ class SendModal extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            title: Text("Send Payment Method"),
+            title: Text("Send Payment"),
           ),
           Divider(height: 0.0,),
           ListTile(
