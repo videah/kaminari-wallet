@@ -3,6 +3,7 @@ import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/send_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SendPage extends StatelessWidget {
   @override
@@ -22,31 +23,37 @@ class SendPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          RoundedIdenticon(
-                            "test",
-                            scale: 80,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text("Alice"),
-                          )
-                        ],
+                      Container(
+                        width: 180,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: RoundedIdenticon(
+                                "test",
+                                scale: 80,
+                              ),
+                            ),
+                            Text("Bob")
+                          ],
+                        ),
                       ),
                       Icon(
-                        Icons.arrow_forward,
-                        size: 42,
+                        FontAwesomeIcons.longArrowAltRight,
+                        size: 32,
                       ),
-                      Column(
-                        children: <Widget>[
-                          RoundedIdenticon(
-                            "${snapshot.data.destination}",
-                            scale: 80,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: StreamBuilder<NodeInfo>(
+                      Container(
+                        width: 180,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: RoundedIdenticon(
+                                "${snapshot.data.destination}",
+                                scale: 80,
+                              ),
+                            ),
+                            StreamBuilder<NodeInfo>(
                               stream: BlocProvider.of<SendBloc>(context)
                                   .destination,
                               builder: (context, snapshot) {
@@ -56,9 +63,9 @@ class SendPage extends StatelessWidget {
                                   return Text("");
                                 }
                               },
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
