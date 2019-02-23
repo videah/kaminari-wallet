@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/send_bloc.dart';
+import 'package:kaminari_wallet/pages/wallet/send_page.dart';
 
 class SendModal extends StatelessWidget {
   @override
@@ -11,7 +15,9 @@ class SendModal extends StatelessWidget {
           ListTile(
             title: Text("Send Payment"),
           ),
-          Divider(height: 0.0,),
+          Divider(
+            height: 0.0,
+          ),
           ListTile(
             title: Text("QR Code"),
             subtitle: Text("Scan a payment request"),
@@ -22,14 +28,20 @@ class SendModal extends StatelessWidget {
             title: Text("Clipboard"),
             subtitle: Text("Paste a payment request"),
             leading: Icon(Icons.content_paste),
-            onTap: () {},
+            onTap: () {
+              Clipboard.getData(Clipboard.kTextPlain).then((data) {
+                Navigator.pop(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      bloc: SendBloc("${data.text}"),
+                      child: SendPage(),
+                    ),
+                  ),
+                );
+              });
+            },
           ),
-          ListTile(
-            title: Text("Contact"),
-            subtitle: Text("Send to a contact directly"),
-            leading: Icon(Icons.contacts),
-            onTap: () {},
-          )
         ],
       ),
     );
