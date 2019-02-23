@@ -5,7 +5,44 @@ class RoundedIdenticon extends StatelessWidget {
   final String text;
   final double scale;
 
-  const RoundedIdenticon(this.text, {Key key, this.scale = 40.0}) : super(key: key);
+  const RoundedIdenticon(this.text, {Key key, this.scale = 40.0})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: _Identicon(
+        text: text,
+        scale: scale,
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return SimpleDialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              children: <Widget>[
+                Center(
+                  child: _Identicon(
+                    text: text,
+                    scale: 300,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _Identicon extends StatelessWidget {
+  final String text;
+  final double scale;
+
+  const _Identicon({Key key, this.text, this.scale}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +67,8 @@ class RoundedIdenticon extends StatelessWidget {
             child: text != null
                 ? Identicon(text)
                 : Center(
-              child: Text("?"),
-            ),
+                    child: Text("?"),
+                  ),
           ),
         ),
       ],
