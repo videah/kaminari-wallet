@@ -9,14 +9,11 @@ class PaymentSuccessPage extends StatefulWidget {
 }
 
 class PaymentSuccessPageState extends State<PaymentSuccessPage> {
-
-  String heroTag = "button-to-success";
   
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 2)).then((_) {
-      setState(() => heroTag = "invalidate-hero");
       Navigator.popUntil(context, ModalRoute.withName("/"));
     });
   }
@@ -24,13 +21,10 @@ class PaymentSuccessPageState extends State<PaymentSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Hero(
-        tag: heroTag,
-        child: Container(
-          color: Colors.green,
-          child: Center(
-            child: Icon(FontAwesomeIcons.check, color: Colors.white, size: 125,),
-          ),
+      body: Container(
+        color: Colors.green,
+        child: Center(
+          child: Icon(FontAwesomeIcons.check, color: Colors.white, size: 125,),
         ),
       ),
     );

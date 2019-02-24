@@ -143,17 +143,14 @@ class SendPage extends StatelessWidget {
             stream: BlocProvider.of<SendBloc>(context).request,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Hero(
-                  tag: "button-to-success",
-                  child: FillIconButton(
-                    child: Text("Send ${snapshot.data.numSatoshis} sat"),
-                    icon: Icon(FontAwesomeIcons.bolt),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => PaymentSuccessPage())
-                      );
-                    },
-                  ),
+                return FillIconButton(
+                  child: Text("Send ${snapshot.data.numSatoshis} sat"),
+                  icon: Icon(FontAwesomeIcons.bolt),
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => PaymentSuccessPage())
+                    );
+                  },
                 );
               } else {
                 return Container();
