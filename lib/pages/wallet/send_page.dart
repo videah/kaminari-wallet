@@ -6,6 +6,7 @@ import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class SendPage extends StatelessWidget {
   @override
@@ -76,7 +77,30 @@ class SendPage extends StatelessWidget {
                   height: 0.0,
                 ),
                 Expanded(
-                  child: ListView(),
+                  child: ListView(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text("Amount"),
+                        subtitle: Text("${snapshot.data.numSatoshis} sat"),
+                      ),
+                      ListTile(
+                        title: Text("Description"),
+                        subtitle: Text("${snapshot.data.description}"),
+                      ),
+                      ListTile(
+                        title: Text("Invoice Date"),
+                        subtitle: Text(
+                          DateFormat.yMEd()
+                              .format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data.timestamp.toInt() * 1000,
+                                ),
+                              )
+                              .toString(),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             );
