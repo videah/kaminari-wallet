@@ -7,9 +7,13 @@ class SendBloc extends LightningBloc {
   final String requestString;
   PayReq _request;
   NodeInfo _destination;
+  GetInfoResponse _node;
 
   final _requestSubject = BehaviorSubject<PayReq>();
   Stream get request => _requestSubject.stream;
+
+  final _selfSubject = BehaviorSubject<GetInfoResponse>();
+  Stream get node => _selfSubject.stream;
 
   final _destinationSubject = BehaviorSubject<NodeInfo>();
   Stream get destination => _destinationSubject.stream;
@@ -20,6 +24,7 @@ class SendBloc extends LightningBloc {
 
   void _setup() async {
     await _decodeRequest();
+    await _getSelfNodeInfo();
     await _getDestinationInfo();
   }
 
@@ -28,6 +33,11 @@ class SendBloc extends LightningBloc {
     invoice.payReq = requestString;
     _request = await lightning.client.decodePayReq(invoice);
     _requestSubject.add(_request);
+  }
+
+  Future _getSelfNodeInfo() async {
+    _node = await lightning.client.getInfo(GetInfoRequest());
+    _selfSubject.add(_node);
   }
 
   Future _getDestinationInfo() async {
@@ -45,6 +55,7 @@ class SendBloc extends LightningBloc {
   void dispose() {
     _requestSubject.close();
     _destinationSubject.close();
+    _selfSubject.close();
   }
 
 }

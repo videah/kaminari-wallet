@@ -25,25 +25,35 @@ class SendPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                   child: DefaultTextStyle(
                     style: TextStyle(
-                      color: DefaultTextStyle.of(context).style.color,
-                      fontSize: 18
-                    ),
+                        color: DefaultTextStyle.of(context).style.color,
+                        fontSize: 18),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Container(
                           width: 180,
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: RoundedIdenticon(
-                                  "test",
-                                  scale: 80,
-                                ),
-                              ),
-                              Text("Bob")
-                            ],
+                          child: StreamBuilder<GetInfoResponse>(
+                            stream: BlocProvider.of<SendBloc>(context).node,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      child: RoundedIdenticon(
+                                        "${snapshot.data.identityPubkey}",
+                                        scale: 80,
+                                      ),
+                                    ),
+                                    Text("${snapshot.data.alias}")
+                                  ],
+                                );
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
                           ),
                         ),
                         Icon(
@@ -68,7 +78,10 @@ class SendPage extends StatelessWidget {
                                   if (snapshot.hasError) {
                                     return Text(
                                       "Unknown Node",
-                                      style: TextStyle(color: Colors.deepPurple, fontStyle: FontStyle.italic),
+                                      style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontStyle: FontStyle.italic,
+                                      ),
                                     );
                                   }
                                   if (snapshot.hasData) {
