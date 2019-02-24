@@ -20,23 +20,26 @@ class SendPageState extends State<SendPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((_) {
-      BlocProvider.of<SendBloc>(context).result.listen((result) {
-        SendResponse response = result;
-        if (response.paymentError == "" || response.paymentError == null) {
-          Navigator.pushReplacementNamed(context, "/payment-success");
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PaymentErrorPage(
-                    error: response.paymentError,
-                  ),
-            ),
-          );
-        }
-      });
-    });
+    Future.delayed(Duration(milliseconds: 10)).then(
+      (_) {
+        BlocProvider.of<SendBloc>(context).result.listen(
+          (result) {
+            SendResponse response = result;
+            if (response.paymentError == "" || response.paymentError == null) {
+              Navigator.of(context).pushReplacementNamed("/payment-success");
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => PaymentErrorPage(
+                        error: response.paymentError,
+                      ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 
   @override
