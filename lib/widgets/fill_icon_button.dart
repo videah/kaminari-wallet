@@ -28,6 +28,7 @@ class FillIconButton extends StatelessWidget {
                 onPressed: enabled ? onTap : null,
                 color: backgroundColor ?? Theme.of(context).accentColor,
                 label: child,
+                textColor: textColor,
                 icon: icon,
                 colorBrightness: Brightness.dark,
                 shape: RoundedRectangleBorder(
@@ -39,6 +40,7 @@ class FillIconButton extends StatelessWidget {
             : RaisedButton(
                 onPressed: enabled ? onTap : null,
                 child: child,
+                textColor: textColor,
                 color: backgroundColor ?? Theme.of(context).primaryColor,
                 colorBrightness: Brightness.dark,
                 shape: RoundedRectangleBorder(

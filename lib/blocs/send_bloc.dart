@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,6 +11,8 @@ class SendBloc extends LightningBloc {
   NodeInfo _destination;
   GetInfoResponse _node;
 
+  bool attemptingSend = false;
+
   final _requestSubject = BehaviorSubject<PayReq>();
   Stream get request => _requestSubject.stream;
 
@@ -18,7 +22,17 @@ class SendBloc extends LightningBloc {
   final _destinationSubject = BehaviorSubject<NodeInfo>();
   Stream get destination => _destinationSubject.stream;
 
+  final _sendAttemptSubject = BehaviorSubject<bool>();
+  Stream get attempting => _sendAttemptSubject.stream;
+
+  final _paymentResultSubject = BehaviorSubject<SendResponse>();
+  Stream get result => _paymentResultSubject.stream;
+
+  final _startAttemptController = StreamController<bool>();
+  Sink<bool> get startAttempt => _sendAttemptSubject.sink;
+
   SendBloc(this.requestString) {
+    _sendAttemptSubject.stream.listen((_) => _attemptPayment());
     _setup();
   }
 
@@ -51,11 +65,25 @@ class SendBloc extends LightningBloc {
     }
   }
 
+  Future _attemptPayment() async {
+    print("test");
+    try {
+      var request = SendRequest();
+      request.paymentRequest = requestString;
+      var response = await lightning.client.sendPaymentSync(request);
+      _paymentResultSubject.add(response);
+    } catch(e) {
+      _paymentResultSubject.addError(e);
+    }
+  }
+
   @override
   void dispose() {
     _requestSubject.close();
     _destinationSubject.close();
     _selfSubject.close();
+    _sendAttemptSubject.close();
+    _startAttemptController.close();
   }
 
 }
