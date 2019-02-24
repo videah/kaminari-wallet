@@ -31,10 +31,14 @@ class SendBloc extends LightningBloc {
   }
 
   Future _getDestinationInfo() async {
-    var request = NodeInfoRequest();
-    request.pubKey = _request.destination;
-    _destination = await lightning.client.getNodeInfo(request);
-    _destinationSubject.add(_destination);
+    try {
+      var request = NodeInfoRequest();
+      request.pubKey = _request.destination;
+      _destination = await lightning.client.getNodeInfo(request);
+      _destinationSubject.add(_destination);
+    } catch(e) {
+      _destinationSubject.addError(e);
+    }
   }
 
   @override

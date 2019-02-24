@@ -23,54 +23,66 @@ class SendPage extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        width: 180,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: RoundedIdenticon(
-                                "test",
-                                scale: 80,
+                  child: DefaultTextStyle(
+                    style: TextStyle(
+                      color: DefaultTextStyle.of(context).style.color,
+                      fontSize: 18
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          width: 180,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: RoundedIdenticon(
+                                  "test",
+                                  scale: 80,
+                                ),
                               ),
-                            ),
-                            Text("Bob")
-                          ],
+                              Text("Bob")
+                            ],
+                          ),
                         ),
-                      ),
-                      Icon(
-                        FontAwesomeIcons.longArrowAltRight,
-                        size: 32,
-                      ),
-                      Container(
-                        width: 180,
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: RoundedIdenticon(
-                                "${snapshot.data.destination}",
-                                scale: 80,
+                        Icon(
+                          FontAwesomeIcons.longArrowAltRight,
+                          size: 32,
+                        ),
+                        Container(
+                          width: 180,
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: RoundedIdenticon(
+                                  "${snapshot.data.destination}",
+                                  scale: 80,
+                                ),
                               ),
-                            ),
-                            StreamBuilder<NodeInfo>(
-                              stream: BlocProvider.of<SendBloc>(context)
-                                  .destination,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Text("${snapshot.data.node.alias}");
-                                } else {
-                                  return Text("");
-                                }
-                              },
-                            )
-                          ],
+                              StreamBuilder<NodeInfo>(
+                                stream: BlocProvider.of<SendBloc>(context)
+                                    .destination,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                      "Unknown Node",
+                                      style: TextStyle(color: Colors.deepPurple, fontStyle: FontStyle.italic),
+                                    );
+                                  }
+                                  if (snapshot.hasData) {
+                                    return Text("${snapshot.data.node.alias}");
+                                  } else {
+                                    return Text("");
+                                  }
+                                },
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Divider(
