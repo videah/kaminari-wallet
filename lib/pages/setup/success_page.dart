@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
-import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
-import 'package:kaminari_wallet/pages/wallet/main_wallet_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,13 +32,8 @@ class SuccessPage extends StatelessWidget {
           FillIconButton(
             child: Text("Complete Setup"),
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                        bloc: MainWalletBloc(),
-                        child: MainWalletPage(),
-                      ),
-                ),
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                "/",
                 (_) => false,
               );
             },

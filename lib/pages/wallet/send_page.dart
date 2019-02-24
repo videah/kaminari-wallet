@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/send_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/pages/wallet/payment_success_page.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
@@ -142,10 +143,17 @@ class SendPage extends StatelessWidget {
             stream: BlocProvider.of<SendBloc>(context).request,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return FillIconButton(
-                  child: Text("Send ${snapshot.data.numSatoshis} sat"),
-                  icon: Icon(FontAwesomeIcons.bolt),
-                  onTap: () {},
+                return Hero(
+                  tag: "button-to-success",
+                  child: FillIconButton(
+                    child: Text("Send ${snapshot.data.numSatoshis} sat"),
+                    icon: Icon(FontAwesomeIcons.bolt),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => PaymentSuccessPage())
+                      );
+                    },
+                  ),
                 );
               } else {
                 return Container();
