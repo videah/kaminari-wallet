@@ -48,7 +48,7 @@ class TransactionDetailPage extends StatelessWidget {
         title: Text("Transaction Details"),
       ),
       body: SeperatedListView(
-        divider: Divider(height: 0.0,),
+        divider: Divider(),
         children: <Widget>[ListTile(
           title: Text("Amount"),
           trailing: AmountLabel(
@@ -62,7 +62,7 @@ class TransactionDetailPage extends StatelessWidget {
         ),
         ListTile(
           title: Text("Date/Time"),
-          subtitle: Text("${prettyTimestamp}"),
+          subtitle: Text("$prettyTimestamp"),
         ),
         tx.route != null
             ? GroovinExpansionTile(
@@ -70,7 +70,6 @@ class TransactionDetailPage extends StatelessWidget {
           title: Text("Route"),
           children: <Widget>[
             Divider(
-              height: 1.0,
             ),
             Stepper(
               currentStep: steps.length - 1,
@@ -83,11 +82,11 @@ class TransactionDetailPage extends StatelessWidget {
             )
           ],
         )
-            : Container(),
+            : null,
         tx.receipt != null
             ? InkWell(
           onTap: () {},
-          child: Padding(
+          child: Container(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               title: Center(child: Text("Preimage")),
@@ -110,7 +109,7 @@ class TransactionDetailPage extends StatelessWidget {
             ),
           ),
         )
-            : Container(),],
+            : null,],
       )
     );
   }

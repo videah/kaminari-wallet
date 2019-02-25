@@ -10,6 +10,7 @@ class SeperatedListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    children.removeWhere((widget) => widget == null);
     return ListView.separated(
       padding: padding,
       itemCount: children.length,
