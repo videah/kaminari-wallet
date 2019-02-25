@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 
 class TransactionsTab extends StatefulWidget {
@@ -35,7 +34,7 @@ class TransactionsTabState extends State<TransactionsTab> {
     var bloc = BlocProvider.of<MainWalletBloc>(context);
     return RefreshIndicator(
       onRefresh: () async {},
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<List<HistoryItem>>(
         stream: bloc.history,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -44,64 +43,27 @@ class TransactionsTabState extends State<TransactionsTab> {
               key: _listKey,
               initialItemCount: _transactions.length,
               itemBuilder: (context, index, animation) {
-                if (_transactions[index] is Transaction) {
-                  Transaction tx = _transactions[index];
-                  return SizeTransition(
-                    sizeFactor: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: TransactionTile(
-                        title: "Anonymous",
-                        subtitle: Text("Chain Transaction"),
-                        amount: tx.amount.toInt(),
-                        direction: tx.amount < 0
-                            ? TxDirection.sending
-                            : TxDirection.receiving,
-                      ),
+                HistoryItem tx = _transactions[index];
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: StreamBuilder<Map<String, String>>(
+                      stream: BlocProvider.of<MainWalletBloc>(context).names,
+                      builder: (context, snapshot) {
+                        var name;
+                        if (snapshot.hasData) name = snapshot.data[tx.userId];
+                        return TransactionTile(
+                          title: name != null ? "$name" : tx.name,
+                          subtitle: Text("${tx.memo}"),
+                          userId: tx.userId,
+                          amount: tx.amount,
+                          direction: tx.direction,
+                        );
+                      },
                     ),
-                  );
-                } else if (_transactions[index] is Payment) {
-                  Payment tx = _transactions[index];
-                  return SizeTransition(
-                    sizeFactor: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: StreamBuilder<Map<String, String>>(
-                        stream: BlocProvider.of<MainWalletBloc>(context).names,
-                        builder: (context, snapshot) {
-                          var name;
-                          if (snapshot.hasData)
-                            name = snapshot.data[tx.path.last];
-                          return TransactionTile(
-                            title: name != null ? "$name" : "Unknown Node",
-                            subtitle: Text("Lightning Transaction"),
-                            userId: tx.path.last,
-                            amount: tx.value.toInt(),
-                            direction: TxDirection.sending,
-                          );
-                        },
-                      ),
-                    ),
-                  );
-                } else if (_transactions[index] is Invoice) {
-                  Invoice tx = _transactions[index];
-                  return SizeTransition(
-                    sizeFactor: animation,
-                    child: FadeTransition(
-                      opacity: animation,
-                      child: TransactionTile(
-                        title: "Anonymous",
-                        subtitle: Text(
-                          tx.memo.isNotEmpty
-                              ? tx.memo
-                              : "Lightning Transaction",
-                        ),
-                        amount: tx.amtPaidSat.toInt(),
-                        direction: TxDirection.receiving,
-                      ),
-                    ),
-                  );
-                }
+                  ),
+                );
               },
             );
           } else {

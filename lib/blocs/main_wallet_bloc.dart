@@ -1,5 +1,6 @@
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MainWalletBloc extends LightningBloc {
@@ -7,7 +8,7 @@ class MainWalletBloc extends LightningBloc {
   List<Transaction> _transactions;
   List<Payment> _payments;
   List<Invoice> _invoices;
-  List<dynamic> _history = [];
+  List<HistoryItem> _history = [];
   Map<String, String> _nameCache = {};
 
   final _balanceSubject = BehaviorSubject<String>();
@@ -16,7 +17,7 @@ class MainWalletBloc extends LightningBloc {
   final _transactionSubject = BehaviorSubject<List<Transaction>>();
   Stream get transactions => _transactionSubject.stream;
 
-  final _historySubject = BehaviorSubject<List<dynamic>>();
+  final _historySubject = BehaviorSubject<List<HistoryItem>>();
   Stream get history => _historySubject.stream;
 
   final _invoicesSubject = BehaviorSubject<List<Invoice>>();
@@ -70,21 +71,59 @@ class MainWalletBloc extends LightningBloc {
       GetTransactionsRequest(),
     );
     _transactions = response.transactions.toList();
-    _history.addAll(_transactions);
     _transactionSubject.add(_transactions);
+    List<HistoryItem> _historyItems = [];
+    _transactions.forEach(
+      (tx) => _historyItems.add(
+            HistoryItem(
+              name: "Anonymous",
+              memo: "Chain Transaction",
+              amount: tx.amount.toInt(),
+              timestamp: tx.timeStamp.toInt(),
+              direction: TxDirection.sending
+            ),
+          ),
+    );
+    _history.addAll(_historyItems);
   }
 
   Future _syncPayments() async {
     var response = await lightning.client.listPayments(ListPaymentsRequest());
     _payments = response.payments.toList();
-    _history.addAll(_payments);
+    List<HistoryItem> _historyItems = [];
+    _payments.forEach(
+      (tx) => _historyItems.add(
+            HistoryItem(
+              name: "Unknown",
+              memo: "Lightning Transaction",
+              amount: tx.valueSat.toInt(),
+              userId: tx.path.last,
+              timestamp: tx.creationDate.toInt(),
+              direction: TxDirection.sending
+            ),
+          ),
+    );
+    _history.addAll(_historyItems);
   }
 
   Future _syncInvoices() async {
     var response = await lightning.client.listInvoices(ListInvoiceRequest());
     _invoices = response.invoices.toList();
-    _history.addAll(_invoices.where((invoice) => invoice.settled));
     _invoicesSubject.add(_invoices);
+
+    List<HistoryItem> _historyItems = [];
+    _invoices.where((invoice) => invoice.settled).forEach(
+          (tx) => _historyItems.add(
+                HistoryItem(
+                  name: "Anonymous",
+                  memo: tx.memo,
+                  amount: tx.value.toInt(),
+                  timestamp: tx.creationDate.toInt(),
+                  direction: TxDirection.receiving,
+                ),
+              ),
+        );
+    _history.addAll(_historyItems);
   }
 
   Future _syncNames() async {
@@ -101,13 +140,7 @@ class MainWalletBloc extends LightningBloc {
 
   Future _sortHistory() async {
     _history.sort((a, b) {
-      var aTimestamp = a is Transaction
-          ? a.timeStamp
-          : a is Invoice ? a.creationDate : a.creationDate;
-      var bTimestamp = b is Transaction
-          ? b.timeStamp
-          : b is Invoice ? b.creationDate : b.creationDate;
-      return aTimestamp < bTimestamp ? 1 : aTimestamp > bTimestamp ? -1 : 0;
+      return a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0;
     });
     _historySubject.add(_history);
   }
@@ -122,4 +155,21 @@ class MainWalletBloc extends LightningBloc {
     _namesSubject.close();
     lightning.client.closeChannel(CloseChannelRequest());
   }
+}
+
+class HistoryItem {
+  final String name;
+  final String memo;
+  final int amount;
+  final int timestamp;
+  final String userId;
+  final TxDirection direction;
+
+  HistoryItem(
+      {this.direction,
+      this.name,
+      this.memo,
+      this.amount,
+      this.timestamp,
+      this.userId});
 }
