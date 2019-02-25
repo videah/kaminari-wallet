@@ -81,7 +81,8 @@ class MainWalletBloc extends LightningBloc {
               memo: "Chain Transaction",
               amount: tx.amount.toInt(),
               timestamp: tx.timeStamp.toInt(),
-              direction: TxDirection.sending
+              direction:
+                  tx.amount > 0 ? TxDirection.receiving : TxDirection.sending,
             ),
           ),
     );
@@ -100,7 +101,7 @@ class MainWalletBloc extends LightningBloc {
               amount: tx.valueSat.toInt(),
               userId: tx.path.last,
               timestamp: tx.creationDate.toInt(),
-              direction: TxDirection.sending
+              direction: TxDirection.sending,
             ),
           ),
     );
@@ -157,8 +158,9 @@ class MainWalletBloc extends LightningBloc {
       if (prevDay != day) indexes.addAll({i - 1: prevTimestamp});
     }
     indexes.forEach((index, timestamp) {
-      var prettyDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
-        _history.insert(index, HistoryHeaderItem(prettyDate));
+      var prettyDate = DateFormat.yMMMd()
+          .format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+      _history.insert(index, HistoryHeaderItem(prettyDate));
     });
   }
 
