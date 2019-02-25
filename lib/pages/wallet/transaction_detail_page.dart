@@ -11,7 +11,6 @@ class TransactionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var time = DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
     var prettyTimestamp = DateFormat.yMMMd().format(time);
 
@@ -76,7 +75,9 @@ class TransactionDetailPage extends StatelessWidget {
                     boxDecoration: null,
                     title: Text("Route"),
                     children: <Widget>[
-                      Divider(height: 1.0,),
+                      Divider(
+                        height: 1.0,
+                      ),
                       Stepper(
                         currentStep: steps.length - 1,
                         steps: steps,

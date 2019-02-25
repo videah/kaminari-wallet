@@ -153,22 +153,26 @@ class MainWalletBloc extends LightningBloc {
   }
 
   Future _insertDateHeaders() async {
-    var indexes = {};
+    Map<int, int> indexes = {};
+    int dif = 0;
     for (var i = _history.length - 1; i > 0; i--) {
       var timestamp = _history[i].timestamp * 1000;
       var prevTimestamp = _history[i - 1].timestamp * 1000;
       var day = DateTime.fromMillisecondsSinceEpoch(timestamp).day;
       var prevDay = DateTime.fromMillisecondsSinceEpoch(prevTimestamp).day;
-      if (prevDay != day) indexes.addAll({i - 1: prevTimestamp});
+      if (prevDay != day) indexes.addAll({i: timestamp});
     }
-    int dif = 1;
     indexes.forEach((index, timestamp) {
       var prettyDate = DateFormat.yMMMd().format(
         DateTime.fromMillisecondsSinceEpoch(timestamp),
       );
-      dif += 1;
       _history.insert(index - dif, HistoryHeaderItem(prettyDate));
+      dif += 1;
     });
+    var timestamp = _history[0].timestamp * 1000;
+    var time = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    var formattedTime = DateFormat.yMMMd().format(time);
+    _history.insert(0, HistoryHeaderItem(formattedTime));
   }
 
   @override
