@@ -55,20 +55,25 @@ class TransactionsTabState extends State<TransactionsTab> {
                         builder: (context, snapshot) {
                           var name;
                           if (snapshot.hasData) name = snapshot.data[tx.userId];
-                          return TransactionTile(
-                            title: name != null ? "$name" : tx.name,
-                            subtitle: Text("${tx.memo}"),
-                            userId: tx.userId,
-                            amount: tx.amount,
-                            direction: tx.direction,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      TransactionDetailPage(tx: tx),
-                                ),
-                              );
-                            },
+                          return Column(
+                            children: <Widget>[
+                              _transactions[index - 1] is HistoryHeaderItem ? Container() : Divider(height: 0.0,),
+                              TransactionTile(
+                                title: name != null ? "$name" : tx.name,
+                                subtitle: Text("${tx.memo}"),
+                                userId: tx.userId,
+                                amount: tx.amount,
+                                direction: tx.direction,
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          TransactionDetailPage(tx: tx),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           );
                         },
                       ),

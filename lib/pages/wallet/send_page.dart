@@ -9,6 +9,7 @@ import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:kaminari_wallet/widgets/seperated_list_view.dart';
 
 class SendPage extends StatefulWidget {
   @override
@@ -149,16 +150,22 @@ class SendPageState extends State<SendPage> with TickerProviderStateMixin {
                       height: 0.0,
                     ),
                     Expanded(
-                      child: ListView(
+                      child: SeperatedListView(
+                        divider: Divider(
+                          height: 0.0,
+                        ),
                         children: <Widget>[
                           ListTile(
                             title: Text("Amount"),
                             subtitle: Text("${snapshot.data.numSatoshis} sat"),
                           ),
-                          ListTile(
-                            title: Text("Description"),
-                            subtitle: Text("${snapshot.data.description}"),
-                          ),
+                          snapshot.data.description != ""
+                              ? ListTile(
+                                  title: Text("Description"),
+                                  subtitle:
+                                      Text("${snapshot.data.description}"),
+                                )
+                              : null,
                           ListTile(
                             title: Text("Invoice Date"),
                             subtitle: Text(

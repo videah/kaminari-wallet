@@ -49,68 +49,69 @@ class TransactionDetailPage extends StatelessWidget {
       ),
       body: SeperatedListView(
         divider: Divider(),
-        children: <Widget>[ListTile(
-          title: Text("Amount"),
-          trailing: AmountLabel(
-            text: tx.amount.toString(),
-            direction: tx.direction,
-          ),
-        ),
-        ListTile(
-          title: Text("Description"),
-          subtitle: Text("${tx.memo}"),
-        ),
-        ListTile(
-          title: Text("Date/Time"),
-          subtitle: Text("$prettyTimestamp"),
-        ),
-        tx.route != null
-            ? GroovinExpansionTile(
-          boxDecoration: null,
-          title: Text("Route"),
-          children: <Widget>[
-            Divider(
-            ),
-            Stepper(
-              currentStep: steps.length - 1,
-              steps: steps,
-              controlsBuilder: (BuildContext context,
-                  {VoidCallback onStepContinue,
-                    VoidCallback onStepCancel}) {
-                return Container();
-              },
-            )
-          ],
-        )
-            : null,
-        tx.receipt != null
-            ? InkWell(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Center(child: Text("Preimage")),
-              subtitle: Column(
-                children: <Widget>[
-                  Text(
-                    "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
-                    style: TextStyle(
-                      fontFamily: "RobotoMono",
-                    ),
-                  ),
-                  Text(
-                    "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
-                    style: TextStyle(
-                      fontFamily: "RobotoMono",
-                    ),
-                  ),
-                ],
-              ),
+        children: <Widget>[
+          ListTile(
+            title: Text("Amount"),
+            trailing: AmountLabel(
+              text: tx.amount.toString(),
+              direction: tx.direction,
             ),
           ),
-        )
-            : null,],
-      )
+          ListTile(
+            title: Text("Description"),
+            subtitle: Text("${tx.memo}"),
+          ),
+          ListTile(
+            title: Text("Date/Time"),
+            subtitle: Text("$prettyTimestamp"),
+          ),
+          tx.route != null
+              ? GroovinExpansionTile(
+                  boxDecoration: null,
+                  title: Text("Route"),
+                  children: <Widget>[
+                    Divider(),
+                    Stepper(
+                      currentStep: steps.length - 1,
+                      steps: steps,
+                      controlsBuilder: (BuildContext context,
+                          {VoidCallback onStepContinue,
+                          VoidCallback onStepCancel}) {
+                        return Container();
+                      },
+                    )
+                  ],
+                )
+              : null,
+          tx.receipt != null
+              ? InkWell(
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Center(child: Text("Preimage")),
+                      subtitle: Column(
+                        children: <Widget>[
+                          Text(
+                            "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
+                            style: TextStyle(
+                              fontFamily: "RobotoMono",
+                            ),
+                          ),
+                          Text(
+                            "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
+                            style: TextStyle(
+                              fontFamily: "RobotoMono",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : null,
+        ],
+      ),
     );
   }
 }
