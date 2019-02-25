@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/widgets/wallet/amount_label.dart';
 import 'package:groovin_widgets/groovin_expansion_tile.dart';
@@ -10,6 +11,10 @@ class TransactionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    var time = DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
+    var prettyTimestamp = DateFormat.yMMMd().format(time);
+
     List<Step> steps = [
       Step(
         title: Text("You"),
@@ -37,7 +42,6 @@ class TransactionDetailPage extends StatelessWidget {
         content: Container(),
       );
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Transaction Details"),
@@ -58,6 +62,12 @@ class TransactionDetailPage extends StatelessWidget {
             child: ListTile(
               title: Text("Description"),
               subtitle: Text("${tx.memo}"),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text("Date/Time"),
+              subtitle: Text("${prettyTimestamp}"),
             ),
           ),
           tx.route != null
