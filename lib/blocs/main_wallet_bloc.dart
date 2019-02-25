@@ -102,6 +102,8 @@ class MainWalletBloc extends LightningBloc {
               userId: tx.path.last,
               timestamp: tx.creationDate.toInt(),
               direction: TxDirection.sending,
+              receipt: tx.paymentPreimage,
+              route: tx.path,
             ),
           ),
     );
@@ -183,14 +185,19 @@ class HistoryItem {
   final int timestamp;
   final String userId;
   final TxDirection direction;
+  final String receipt;
+  final List<String> route;
 
-  HistoryItem(
-      {this.direction,
-      this.name,
-      this.memo,
-      this.amount,
-      this.timestamp,
-      this.userId});
+  HistoryItem({
+    this.direction,
+    this.name,
+    this.memo,
+    this.amount,
+    this.timestamp,
+    this.userId,
+    this.receipt,
+    this.route,
+  });
 }
 
 class HistoryHeaderItem {

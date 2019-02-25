@@ -11,6 +11,7 @@ class TransactionTile extends StatelessWidget {
   final Widget subtitle;
   final TxDirection direction;
   final int amount;
+  final GestureTapCallback onTap;
 
   const TransactionTile(
       {Key key,
@@ -19,7 +20,8 @@ class TransactionTile extends StatelessWidget {
       this.subtitle,
       this.direction,
       this.amount,
-      this.userId})
+      this.userId,
+      this.onTap})
       : super(key: key);
 
   @override
@@ -35,7 +37,7 @@ class TransactionTile extends StatelessWidget {
         direction: direction,
       ),
       leading: RoundedIdenticon(userId),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 

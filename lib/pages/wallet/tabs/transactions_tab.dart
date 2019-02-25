@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
+import 'package:kaminari_wallet/pages/wallet/transaction_detail_page.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 
 class TransactionsTab extends StatefulWidget {
@@ -60,6 +61,14 @@ class TransactionsTabState extends State<TransactionsTab> {
                             userId: tx.userId,
                             amount: tx.amount,
                             direction: tx.direction,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      TransactionDetailPage(tx: tx),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
@@ -67,7 +76,8 @@ class TransactionsTabState extends State<TransactionsTab> {
                   );
                 } else {
                   return Padding(
-                    padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 0.0),
+                    padding: const EdgeInsets.only(
+                        left: 16.0, top: 16.0, bottom: 0.0),
                     child: Text("${_transactions[index].date}"),
                   );
                 }
