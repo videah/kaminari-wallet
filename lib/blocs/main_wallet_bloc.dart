@@ -1,3 +1,4 @@
+import 'package:convert/convert.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
@@ -124,6 +125,7 @@ class MainWalletBloc extends LightningBloc {
                   amount: tx.value.toInt(),
                   timestamp: tx.creationDate.toInt(),
                   direction: TxDirection.receiving,
+                  receipt: hex.encode(tx.rPreimage),
                 ),
               ),
         );
