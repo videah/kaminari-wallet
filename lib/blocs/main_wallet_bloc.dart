@@ -8,6 +8,7 @@ class MainWalletBloc extends LightningBloc {
   List<Payment> _payments;
   List<Invoice> _invoices;
   List<dynamic> _history = [];
+  Map<String, String> _nameCache = {};
 
   final _balanceSubject = BehaviorSubject<String>();
   Stream get balance => _balanceSubject.stream;
@@ -20,6 +21,9 @@ class MainWalletBloc extends LightningBloc {
 
   final _invoicesSubject = BehaviorSubject<List<Invoice>>();
   Stream get invoices => _invoicesSubject.stream;
+
+  final _namesSubject = BehaviorSubject<Map<String, String>>();
+  Stream get names => _namesSubject.stream;
 
   final _newTransactionSubject = BehaviorSubject();
   Stream get newTransaction => _newTransactionSubject.stream;
@@ -35,6 +39,7 @@ class MainWalletBloc extends LightningBloc {
     await _syncPayments();
     await _syncInvoices();
     await _sortHistory();
+    await _syncNames();
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
         .listen(_newTransactionSubject.add);
@@ -82,6 +87,18 @@ class MainWalletBloc extends LightningBloc {
     _invoicesSubject.add(_invoices);
   }
 
+  Future _syncNames() async {
+    for (var payment in _payments) {
+      if (!_nameCache.containsKey(payment.path.last)) {
+        var request = NodeInfoRequest();
+        request.pubKey = payment.path.last;
+        var response = await lightning.client.getNodeInfo(request);
+        _nameCache.addAll({payment.path.last: response.node.alias});
+      }
+    }
+    _namesSubject.add(_nameCache);
+  }
+
   Future _sortHistory() async {
     _history.sort((a, b) {
       var aTimestamp = a is Transaction
@@ -102,6 +119,7 @@ class MainWalletBloc extends LightningBloc {
     _historySubject.close();
     _invoicesSubject.close();
     _newTransactionSubject.close();
+    _namesSubject.close();
     lightning.client.closeChannel(CloseChannelRequest());
   }
 }

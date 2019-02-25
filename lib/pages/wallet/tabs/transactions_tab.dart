@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
@@ -58,9 +57,6 @@ class TransactionsTabState extends State<TransactionsTab> {
                         direction: tx.amount < 0
                             ? TxDirection.sending
                             : TxDirection.receiving,
-                        image: NetworkImage(
-                          "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
-                        ),
                       ),
                     ),
                   );
@@ -70,15 +66,20 @@ class TransactionsTabState extends State<TransactionsTab> {
                     sizeFactor: animation,
                     child: FadeTransition(
                       opacity: animation,
-                      child: TransactionTile(
-                        title: "Anonymous",
-                        subtitle: Text("Lightning Transaction"),
-                        userId: tx.path.last,
-                        amount: tx.value.toInt(),
-                        direction: TxDirection.sending,
-                        image: NetworkImage(
-                          "https://pbs.twimg.com/profile_images/941678006606729217/C4L6sQEf_400x400.jpg",
-                        ),
+                      child: StreamBuilder<Map<String, String>>(
+                        stream: BlocProvider.of<MainWalletBloc>(context).names,
+                        builder: (context, snapshot) {
+                          var name;
+                          if (snapshot.hasData)
+                            name = snapshot.data[tx.path.last];
+                          return TransactionTile(
+                            title: name != null ? "$name" : "Unknown Node",
+                            subtitle: Text("Lightning Transaction"),
+                            userId: tx.path.last,
+                            amount: tx.value.toInt(),
+                            direction: TxDirection.sending,
+                          );
+                        },
                       ),
                     ),
                   );
