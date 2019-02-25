@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
@@ -8,7 +9,7 @@ class MainWalletBloc extends LightningBloc {
   List<Transaction> _transactions;
   List<Payment> _payments;
   List<Invoice> _invoices;
-  List<HistoryItem> _history = [];
+  List<dynamic> _history = [];
   Map<String, String> _nameCache = {};
 
   final _balanceSubject = BehaviorSubject<String>();
@@ -17,7 +18,7 @@ class MainWalletBloc extends LightningBloc {
   final _transactionSubject = BehaviorSubject<List<Transaction>>();
   Stream get transactions => _transactionSubject.stream;
 
-  final _historySubject = BehaviorSubject<List<HistoryItem>>();
+  final _historySubject = BehaviorSubject<List<dynamic>>();
   Stream get history => _historySubject.stream;
 
   final _invoicesSubject = BehaviorSubject<List<Invoice>>();
@@ -142,7 +143,23 @@ class MainWalletBloc extends LightningBloc {
     _history.sort((a, b) {
       return a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0;
     });
+    await _insertDateHeaders();
     _historySubject.add(_history);
+  }
+
+  Future _insertDateHeaders() async {
+    var indexes = {};
+    for (var i = _history.length - 1; i > 0; i--) {
+      var timestamp = _history[i].timestamp * 1000;
+      var prevTimestamp = _history[i - 1].timestamp * 1000;
+      var day = DateTime.fromMillisecondsSinceEpoch(timestamp).day;
+      var prevDay = DateTime.fromMillisecondsSinceEpoch(prevTimestamp).day;
+      if (prevDay != day) indexes.addAll({i - 1: prevTimestamp});
+    }
+    indexes.forEach((index, timestamp) {
+      var prettyDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+        _history.insert(index, HistoryHeaderItem(prettyDate));
+    });
   }
 
   @override
@@ -172,4 +189,10 @@ class HistoryItem {
       this.amount,
       this.timestamp,
       this.userId});
+}
+
+class HistoryHeaderItem {
+  final String date;
+
+  HistoryHeaderItem(this.date);
 }

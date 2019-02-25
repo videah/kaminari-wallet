@@ -34,7 +34,7 @@ class TransactionsTabState extends State<TransactionsTab> {
     var bloc = BlocProvider.of<MainWalletBloc>(context);
     return RefreshIndicator(
       onRefresh: () async {},
-      child: StreamBuilder<List<HistoryItem>>(
+      child: StreamBuilder<List<dynamic>>(
         stream: bloc.history,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -43,27 +43,34 @@ class TransactionsTabState extends State<TransactionsTab> {
               key: _listKey,
               initialItemCount: _transactions.length,
               itemBuilder: (context, index, animation) {
-                HistoryItem tx = _transactions[index];
-                return SizeTransition(
-                  sizeFactor: animation,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: StreamBuilder<Map<String, String>>(
-                      stream: BlocProvider.of<MainWalletBloc>(context).names,
-                      builder: (context, snapshot) {
-                        var name;
-                        if (snapshot.hasData) name = snapshot.data[tx.userId];
-                        return TransactionTile(
-                          title: name != null ? "$name" : tx.name,
-                          subtitle: Text("${tx.memo}"),
-                          userId: tx.userId,
-                          amount: tx.amount,
-                          direction: tx.direction,
-                        );
-                      },
+                if (_transactions[index] is HistoryItem) {
+                  HistoryItem tx = _transactions[index];
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: StreamBuilder<Map<String, String>>(
+                        stream: BlocProvider.of<MainWalletBloc>(context).names,
+                        builder: (context, snapshot) {
+                          var name;
+                          if (snapshot.hasData) name = snapshot.data[tx.userId];
+                          return TransactionTile(
+                            title: name != null ? "$name" : tx.name,
+                            subtitle: Text("${tx.memo}"),
+                            userId: tx.userId,
+                            amount: tx.amount,
+                            direction: tx.direction,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 16.0, top: 16.0, bottom: 0.0),
+                    child: Text("${_transactions[index].date}"),
+                  );
+                }
               },
             );
           } else {
