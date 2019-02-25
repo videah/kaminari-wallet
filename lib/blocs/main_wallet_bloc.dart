@@ -161,10 +161,13 @@ class MainWalletBloc extends LightningBloc {
       var prevDay = DateTime.fromMillisecondsSinceEpoch(prevTimestamp).day;
       if (prevDay != day) indexes.addAll({i - 1: prevTimestamp});
     }
+    int dif = 1;
     indexes.forEach((index, timestamp) {
-      var prettyDate = DateFormat.yMMMd()
-          .format(DateTime.fromMillisecondsSinceEpoch(timestamp));
-      _history.insert(index, HistoryHeaderItem(prettyDate));
+      var prettyDate = DateFormat.yMMMd().format(
+        DateTime.fromMillisecondsSinceEpoch(timestamp),
+      );
+      dif += 1;
+      _history.insert(index - dif, HistoryHeaderItem(prettyDate));
     });
   }
 
