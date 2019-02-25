@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
+import 'package:kaminari_wallet/widgets/seperated_list_view.dart';
 import 'package:kaminari_wallet/widgets/wallet/amount_label.dart';
 import 'package:groovin_widgets/groovin_expansion_tile.dart';
 
@@ -41,87 +42,76 @@ class TransactionDetailPage extends StatelessWidget {
         content: Container(),
       );
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Transaction Details"),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(4.0),
-        children: <Widget>[
-          Card(
+      body: SeperatedListView(
+        divider: Divider(height: 0.0,),
+        children: <Widget>[ListTile(
+          title: Text("Amount"),
+          trailing: AmountLabel(
+            text: tx.amount.toString(),
+            direction: tx.direction,
+          ),
+        ),
+        ListTile(
+          title: Text("Description"),
+          subtitle: Text("${tx.memo}"),
+        ),
+        ListTile(
+          title: Text("Date/Time"),
+          subtitle: Text("${prettyTimestamp}"),
+        ),
+        tx.route != null
+            ? GroovinExpansionTile(
+          boxDecoration: null,
+          title: Text("Route"),
+          children: <Widget>[
+            Divider(
+              height: 1.0,
+            ),
+            Stepper(
+              currentStep: steps.length - 1,
+              steps: steps,
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue,
+                    VoidCallback onStepCancel}) {
+                return Container();
+              },
+            )
+          ],
+        )
+            : Container(),
+        tx.receipt != null
+            ? InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: ListTile(
-              title: Text("Amount"),
-              trailing: AmountLabel(
-                text: tx.amount.toString(),
-                direction: tx.direction,
+              title: Center(child: Text("Preimage")),
+              subtitle: Column(
+                children: <Widget>[
+                  Text(
+                    "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
+                    style: TextStyle(
+                      fontFamily: "RobotoMono",
+                    ),
+                  ),
+                  Text(
+                    "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
+                    style: TextStyle(
+                      fontFamily: "RobotoMono",
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          Card(
-            child: ListTile(
-              title: Text("Description"),
-              subtitle: Text("${tx.memo}"),
-            ),
-          ),
-          Card(
-            child: ListTile(
-              title: Text("Date/Time"),
-              subtitle: Text("${prettyTimestamp}"),
-            ),
-          ),
-          tx.route != null
-              ? Card(
-                  child: GroovinExpansionTile(
-                    boxDecoration: null,
-                    title: Text("Route"),
-                    children: <Widget>[
-                      Divider(
-                        height: 1.0,
-                      ),
-                      Stepper(
-                        currentStep: steps.length - 1,
-                        steps: steps,
-                        controlsBuilder: (BuildContext context,
-                            {VoidCallback onStepContinue,
-                            VoidCallback onStepCancel}) {
-                          return Container();
-                        },
-                      )
-                    ],
-                  ),
-                )
-              : Container(),
-          tx.receipt != null
-              ? Card(
-                  child: InkWell(
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Center(child: Text("Preimage")),
-                        subtitle: Column(
-                          children: <Widget>[
-                            Text(
-                              "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
-                              style: TextStyle(
-                                fontFamily: "RobotoMono",
-                              ),
-                            ),
-                            Text(
-                              "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
-                              style: TextStyle(
-                                fontFamily: "RobotoMono",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              : Container(),
-        ],
-      ),
+        )
+            : Container(),],
+      )
     );
   }
 }
