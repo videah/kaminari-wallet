@@ -8,6 +8,7 @@ import 'package:kaminari_wallet/pages/wallet/tabs/invoices_tab.dart';
 import 'package:kaminari_wallet/pages/wallet/tabs/transactions_tab.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
+import 'package:kaminari_wallet/widgets/wallet/receive_modal.dart';
 import 'package:kaminari_wallet/widgets/wallet/send_modal.dart';
 
 class MainWalletPage extends StatelessWidget {
@@ -69,7 +70,11 @@ class MainWalletPage extends StatelessWidget {
                 FillIconButton(
                   icon: Icon(Icons.call_received),
                   child: Text("Receive"),
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(context: (context), builder: (context) {
+                      return ReceiveModal();
+                    });
+                  },
                 ),
                 FillIconButton(
                   icon: Icon(Icons.call_made),
