@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
@@ -14,14 +16,23 @@ class TransactionsTab extends StatefulWidget {
 class TransactionsTabState extends State<TransactionsTab> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   List<dynamic> _transactions = [];
+  StreamSubscription _syncSubscription;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 10)).then((_) {
+    // This has a weird race condition on profile/release mode
+    // TODO: Fix this
+    Future.delayed(Duration(milliseconds: 100)).then((_) {
       var bloc = BlocProvider.of<MainWalletBloc>(context);
-      bloc.newTransaction.listen(_addTransaction);
+      _syncSubscription = bloc.newTransaction.listen(_addTransaction);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _syncSubscription.cancel();
   }
 
   void _addTransaction(var tx) {

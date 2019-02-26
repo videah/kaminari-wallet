@@ -35,9 +35,7 @@ class MainWalletPageState extends State<MainWalletPage> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    Future.delayed(Duration(milliseconds: 20)).then((_) {
-      BlocProvider.of<MainWalletBloc>(context).sync.add(true);
-    });
+    BlocProvider.of<MainWalletBloc>(context).sync.add(true);
   }
 
   @override
