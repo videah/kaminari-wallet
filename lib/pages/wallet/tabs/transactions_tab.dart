@@ -57,7 +57,7 @@ class TransactionsTabState extends State<TransactionsTab> {
                           if (snapshot.hasData) name = snapshot.data[tx.userId];
                           return Column(
                             children: <Widget>[
-                              _transactions[index - 1] is HistoryHeaderItem ? Container() : Divider(height: 0.0,),
+//                              _transactions[index - 1] is HistoryHeaderItem ? Container() : Divider(height: 0.0,),
                               TransactionTile(
                                 title: name != null ? "$name" : tx.name,
                                 subtitle: Text("${tx.memo}"),
