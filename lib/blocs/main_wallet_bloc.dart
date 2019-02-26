@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:convert/convert.dart';
-import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
@@ -199,29 +198,7 @@ class MainWalletBloc extends LightningBloc {
     _history.sort((a, b) {
       return a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0;
     });
-    await _insertDateHeaders();
     _historySubject.add(_history);
-  }
-
-  Future _insertDateHeaders() async {
-    Map<int, int> indexes = {};
-    for (var i = _history.length - 1; i > 0; i--) {
-      var timestamp = _history[i].timestamp * 1000;
-      var prevTimestamp = _history[i - 1].timestamp * 1000;
-      var day = DateTime.fromMillisecondsSinceEpoch(timestamp).day;
-      var prevDay = DateTime.fromMillisecondsSinceEpoch(prevTimestamp).day;
-      if (prevDay != day) indexes.addAll({i: timestamp});
-    }
-    indexes.forEach((index, timestamp) {
-      var prettyDate = DateFormat.yMMMd().format(
-        DateTime.fromMillisecondsSinceEpoch(timestamp),
-      );
-      _history.insert(index, HistoryHeaderItem(prettyDate));
-    });
-    var timestamp = _history[0].timestamp * 1000;
-    var time = DateTime.fromMillisecondsSinceEpoch(timestamp);
-    var formattedTime = DateFormat.yMMMd().format(time);
-    _history.insert(0, HistoryHeaderItem(formattedTime));
   }
 
   @override
@@ -257,10 +234,4 @@ class HistoryItem {
     this.receipt,
     this.route,
   });
-}
-
-class HistoryHeaderItem {
-  final String date;
-
-  HistoryHeaderItem(this.date);
 }
