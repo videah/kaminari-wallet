@@ -9,6 +9,8 @@ import 'package:kaminari_wallet/pages/wallet/payment_success_page.dart';
 
 void main() => runApp(KaminariApp());
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 class KaminariApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class KaminariApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
+      navigatorObservers: [routeObserver],
       routes: {
         "/": (context) => BlocProvider<MainWalletBloc>(
               bloc: MainWalletBloc(),

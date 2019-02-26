@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:convert/convert.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
@@ -31,6 +33,9 @@ class MainWalletBloc extends LightningBloc {
   final _newTransactionSubject = BehaviorSubject();
   Stream get newTransaction => _newTransactionSubject.stream;
 
+  final _syncController = StreamController<bool>();
+  Sink<bool> get sync => _syncController.sink;
+
   MainWalletBloc() {
     _setup();
   }
@@ -43,17 +48,63 @@ class MainWalletBloc extends LightningBloc {
     await _syncInvoices();
     await _sortHistory();
     await _syncNames();
+    _syncController.stream.listen((_) async {
+      await _syncNewPayments();
+      await _syncNames();
+    });
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
-        .listen(_newTransactionSubject.add);
+        .listen(_handleNewTransaction);
     lightning.client
         .subscribeInvoices((InvoiceSubscription()))
-        .listen((invoice) {
-      if (invoice.settled) {
-        _newTransactionSubject.add(invoice);
-        _syncBalance();
-      }
-    });
+        .listen(_handleNewInvoice);
+  }
+
+  void _handleNewInvoice(Invoice invoice) async {
+    if (invoice.settled) {
+      var invoiceItem = HistoryItem(
+        name: "Anonymous",
+        memo: invoice.memo,
+        amount: invoice.value.toInt(),
+        timestamp: invoice.creationDate.toInt(),
+        direction: TxDirection.receiving,
+        receipt: hex.encode(invoice.rPreimage),
+      );
+      _newTransactionSubject.add(invoiceItem);
+      _syncBalance();
+    }
+  }
+
+  void _handleNewTransaction(Transaction tx) async {
+    var transactionItem = HistoryItem(
+      name: "Anonymous",
+      memo: "Chain Transaction",
+      amount: tx.amount.toInt(),
+      timestamp: tx.timeStamp.toInt(),
+      direction: tx.amount > 0 ? TxDirection.receiving : TxDirection.sending,
+    );
+    _newTransactionSubject.add(transactionItem);
+    _syncBalance();
+  }
+
+  Future _syncNewPayments() async {
+    var response = await lightning.client.listPayments(ListPaymentsRequest());
+    var newPayments = response.payments;
+    newPayments.removeWhere((payment) => _payments.contains(payment));
+    for (var tx in newPayments) {
+      _payments.add(tx);
+      var paymentItem = HistoryItem(
+        name: "Unknown",
+        memo: "Lightning Transaction",
+        amount: tx.valueSat.toInt(),
+        userId: tx.path.last,
+        timestamp: tx.creationDate.toInt(),
+        direction: TxDirection.sending,
+        receipt: tx.paymentPreimage,
+        route: tx.path,
+      );
+      _newTransactionSubject.add(paymentItem);
+    }
   }
 
   void _syncBalance() async {
@@ -181,6 +232,7 @@ class MainWalletBloc extends LightningBloc {
     _invoicesSubject.close();
     _newTransactionSubject.close();
     _namesSubject.close();
+    _syncController.close();
     lightning.client.closeChannel(CloseChannelRequest());
   }
 }

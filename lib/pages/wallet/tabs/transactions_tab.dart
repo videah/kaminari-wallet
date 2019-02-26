@@ -11,10 +11,9 @@ class TransactionsTab extends StatefulWidget {
   }
 }
 
-List<dynamic> _transactions = [];
-
 class TransactionsTabState extends State<TransactionsTab> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  List<dynamic> _transactions = [];
 
   @override
   void initState() {
@@ -34,7 +33,9 @@ class TransactionsTabState extends State<TransactionsTab> {
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<MainWalletBloc>(context);
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: () async {
+        bloc.sync.add(true);
+      },
       child: StreamBuilder<List<dynamic>>(
         stream: bloc.history,
         builder: (context, snapshot) {
