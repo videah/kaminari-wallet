@@ -24,7 +24,9 @@ class ReceiveModal extends StatelessWidget {
                 child: Icon(FontAwesomeIcons.bolt, color: Colors.white, size: 18,),
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed("/create-invoice");
+            },
           ),
           ListTile(
             title: Text("Receive On-Chain"),
