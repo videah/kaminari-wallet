@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';
 import 'package:kaminari_wallet/widgets/fill_icon_button.dart';
 import 'package:kaminari_wallet/widgets/seperated_list_view.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class ReceiveLightningPage extends StatefulWidget {
   @override
@@ -78,8 +80,8 @@ class ReceiveLightningPageState extends State<ReceiveLightningPage> {
             Column(
               children: <Widget>[
                 ListTile(
-                  title: Text("Invoice Description (optional)"),
-                  subtitle: Text("Describe what the invoice's purpose is."),
+                  title: Text("Invoice Description (Optional)"),
+                  subtitle: Text("What is the purpose of the invoice?"),
                 ),
                 Padding(
                   padding:
@@ -94,6 +96,26 @@ class ReceiveLightningPageState extends State<ReceiveLightningPage> {
                     ),
                   ),
                 ),
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                ListTile(
+                  title: Text("Expiry Date (Optional)"),
+                  subtitle: Text("When do you want the invoice to expire?"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  child: DateTimePickerFormField(
+                    inputType: InputType.both,
+                    editable: false,
+                    format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Expiry Date",
+                    ),
+                  ),
+                )
               ],
             ),
             CheckboxListTile(
