@@ -48,7 +48,7 @@ class TransactionDetailPage extends StatelessWidget {
         title: Text("Transaction Details"),
       ),
       body: SeperatedListView(
-        divider: Divider(),
+        divider: Divider(height: 0.0,),
         children: <Widget>[
           ListTile(
             title: Text("Amount"),
