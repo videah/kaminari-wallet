@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:kaminari_wallet/widgets/wallet/amount_label.dart';
 
-enum TxDirection { sending, receiving }
+enum TxStatus { sending, receiving, pending }
 
 class TransactionTile extends StatelessWidget {
   final String title;
   final String userId;
   final ImageProvider image;
   final Widget subtitle;
-  final TxDirection direction;
+  final TxStatus direction;
   final int amount;
   final GestureTapCallback onTap;
 

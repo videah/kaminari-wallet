@@ -4,14 +4,14 @@ import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 
 class AmountLabel extends StatelessWidget {
   final String text;
-  final TxDirection direction;
+  final TxStatus direction;
 
   const AmountLabel({Key key, this.text, this.direction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var color = direction == TxDirection.receiving ? Colors.green : Colors.red;
-    var icon = direction == TxDirection.receiving
+    var color = direction == TxStatus.receiving ? Colors.green : Colors.red;
+    var icon = direction == TxStatus.receiving
         ? FontAwesomeIcons.plus
         : FontAwesomeIcons.minus;
 

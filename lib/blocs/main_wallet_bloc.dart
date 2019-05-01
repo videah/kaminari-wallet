@@ -66,7 +66,7 @@ class MainWalletBloc extends LightningBloc {
         memo: invoice.memo,
         amount: invoice.value.toInt(),
         timestamp: invoice.creationDate.toInt(),
-        direction: TxDirection.receiving,
+        direction: TxStatus.receiving,
         receipt: hex.encode(invoice.rPreimage),
       );
       _newTransactionSubject.add(invoiceItem);
@@ -80,7 +80,7 @@ class MainWalletBloc extends LightningBloc {
       memo: "Chain Transaction",
       amount: tx.amount.toInt(),
       timestamp: tx.timeStamp.toInt(),
-      direction: tx.amount > 0 ? TxDirection.receiving : TxDirection.sending,
+      direction: tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
     );
     _newTransactionSubject.add(transactionItem);
     _syncBalance();
@@ -98,7 +98,7 @@ class MainWalletBloc extends LightningBloc {
         amount: tx.valueSat.toInt(),
         userId: tx.path.last,
         timestamp: tx.creationDate.toInt(),
-        direction: TxDirection.sending,
+        direction: TxStatus.sending,
         receipt: tx.paymentPreimage,
         route: tx.path,
       );
@@ -133,7 +133,7 @@ class MainWalletBloc extends LightningBloc {
               amount: tx.amount.toInt(),
               timestamp: tx.timeStamp.toInt(),
               direction:
-                  tx.amount > 0 ? TxDirection.receiving : TxDirection.sending,
+                  tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
             ),
           ),
     );
@@ -152,7 +152,7 @@ class MainWalletBloc extends LightningBloc {
               amount: tx.valueSat.toInt(),
               userId: tx.path.last,
               timestamp: tx.creationDate.toInt(),
-              direction: TxDirection.sending,
+              direction: TxStatus.sending,
               receipt: tx.paymentPreimage,
               route: tx.path,
             ),
@@ -174,7 +174,7 @@ class MainWalletBloc extends LightningBloc {
                   memo: tx.memo,
                   amount: tx.value.toInt(),
                   timestamp: tx.creationDate.toInt(),
-                  direction: TxDirection.receiving,
+                  direction: TxStatus.receiving,
                   receipt: hex.encode(tx.rPreimage),
                 ),
               ),
@@ -220,7 +220,7 @@ class HistoryItem {
   final int amount;
   final int timestamp;
   final String userId;
-  final TxDirection direction;
+  final TxStatus direction;
   final String receipt;
   final List<String> route;
 

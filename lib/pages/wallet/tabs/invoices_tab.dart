@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/widgets/wallet/invoice_tile.dart';
 
 class InvoicesTab extends StatelessWidget {
   @override
@@ -17,10 +18,11 @@ class InvoicesTab extends StatelessWidget {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
-                  var invoice = snapshot.data[index];
-                  return ListTile(
-                    title: Text("Invoice"),
-                    subtitle: Text("${invoice.memo}"),
+                  Invoice invoice = snapshot.data[index];
+                  return InvoiceTile(
+                    name: "Invoice",
+                    description: invoice.memo,
+                    amount: invoice.value.toInt(),
                   );
                 },
               );
