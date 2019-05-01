@@ -11,7 +11,7 @@ class MainWalletBloc extends LightningBloc {
   List<Transaction> _transactions;
   List<Payment> _payments;
   List<Invoice> _invoices;
-  List<dynamic> _history = [];
+  List<HistoryItem> _history = [];
   Map<String, String> _nameCache = {};
 
   final _balanceSubject = BehaviorSubject<String>();
@@ -20,7 +20,7 @@ class MainWalletBloc extends LightningBloc {
   final _transactionSubject = BehaviorSubject<List<Transaction>>();
   Stream get transactions => _transactionSubject.stream;
 
-  final _historySubject = BehaviorSubject<List<dynamic>>();
+  final _historySubject = BehaviorSubject<List<HistoryItem>>();
   Stream get history => _historySubject.stream;
 
   final _invoicesSubject = BehaviorSubject<List<Invoice>>();

@@ -6,41 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/pages/wallet/transaction_detail_page.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
+import 'package:animated_stream_list/animated_stream_list.dart';
+import 'package:date_util/date_util.dart';
 
-class TransactionsTab extends StatefulWidget {
-  @override
-  TransactionsTabState createState() {
-    return new TransactionsTabState();
-  }
-}
-
-class TransactionsTabState extends State<TransactionsTab> {
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  List<dynamic> _transactions = [];
-  StreamSubscription _syncSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    // This has a weird race condition on profile/release mode
-    // TODO: Fix this
-    Future.delayed(Duration(milliseconds: 100)).then((_) {
-      var bloc = BlocProvider.of<MainWalletBloc>(context);
-      _syncSubscription = bloc.newTransaction.listen(_addTransaction);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _syncSubscription.cancel();
-  }
-
-  void _addTransaction(var tx) {
-    _transactions.insert(0, tx);
-    _listKey.currentState.insertItem(0, duration: Duration(milliseconds: 300));
-  }
-
+class TransactionsTab extends StatelessWidget {
   Widget _buildTimestamp(BuildContext context, timestamp) {
     var date = _getDate(timestamp);
     var prettyDate = DateFormat.yMMMd().format(date);
@@ -54,80 +23,92 @@ class TransactionsTabState extends State<TransactionsTab> {
     return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
   }
 
+  Widget _buildDivider(HistoryItem tx, HistoryItem previousTx, int index) {
+    return Builder(
+      builder: (context) {
+        if (index != 0) {
+          var date = _getDate(tx.timestamp);
+          var prevDate = _getDate(previousTx.timestamp);
+
+          var day =
+              DateUtil().totalLengthOfDays(date.month, date.day, date.year);
+          var prevDay = DateUtil()
+              .totalLengthOfDays(prevDate.month, prevDate.day, prevDate.year);
+          return day < prevDay
+              ? _buildTimestamp(context, tx.timestamp)
+              : Divider(height: 0.0);
+        } else {
+          return _buildTimestamp(context, tx.timestamp);
+        }
+      },
+    );
+  }
+
+  Widget _buildTile(
+      BuildContext context, HistoryItem tx, Animation<double> animation) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: FadeTransition(
+        opacity: animation,
+        child: StreamBuilder<Map<String, String>>(
+          stream: BlocProvider.of<MainWalletBloc>(context).names,
+          builder: (context, snapshot) {
+            var name;
+            if (snapshot.hasData) name = snapshot.data[tx.userId];
+            return TransactionTile(
+              title: name != null ? "$name" : tx.name,
+              subtitle: Text("${tx.memo}"),
+              userId: tx.userId,
+              amount: tx.amount,
+              direction: tx.direction,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => TransactionDetailPage(tx: tx),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<MainWalletBloc>(context);
+    final Stream<List<HistoryItem>> history = bloc.history.cast();
+    var _previousTx;
     return RefreshIndicator(
       onRefresh: () async {
         bloc.sync.add(true);
       },
-      child: StreamBuilder<List<dynamic>>(
+      child: StreamBuilder<Object>(
         stream: bloc.history,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            _transactions = snapshot.data;
-            return AnimatedList(
-              key: _listKey,
-              initialItemCount: _transactions.length,
-              itemBuilder: (context, index, animation) {
-                HistoryItem tx = _transactions[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Builder(
-                      builder: (context) {
-                        if (index != 0) {
-                          var day = _getDate(tx.timestamp).day;
-                          var nextDay = _getDate(_transactions[index - 1].timestamp).day;
-                          return day < nextDay
-                              ? _buildTimestamp(context, tx.timestamp)
-                              : Divider(
-                                  height: 0.0,
-                                );
-                        } else {
-                          return _buildTimestamp(context, tx.timestamp);
-                        }
-                      },
-                    ),
-                    SizeTransition(
-                      sizeFactor: animation,
-                      child: FadeTransition(
-                        opacity: animation,
-                        child: StreamBuilder<Map<String, String>>(
-                          stream:
-                              BlocProvider.of<MainWalletBloc>(context).names,
-                          builder: (context, snapshot) {
-                            var name;
-                            if (snapshot.hasData)
-                              name = snapshot.data[tx.userId];
-                            return TransactionTile(
-                              title: name != null ? "$name" : tx.name,
-                              subtitle: Text("${tx.memo}"),
-                              userId: tx.userId,
-                              amount: tx.amount,
-                              direction: tx.direction,
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        TransactionDetailPage(tx: tx),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          } else {
+          if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
+          return AnimatedStreamList<HistoryItem>(
+            streamList: history,
+            itemBuilder: (tx, index, context, animation) {
+              var divider = _buildDivider(tx, _previousTx, index);
+              var tile = _buildTile(context, tx, animation);
+              _previousTx = tx;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  divider,
+                  tile,
+                ],
+              );
+            },
+            itemRemovedBuilder: (tx, index, context, animation) {},
+          );
         },
       ),
     );
