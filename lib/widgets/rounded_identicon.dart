@@ -95,8 +95,8 @@ class _Identicon extends StatelessWidget {
       child: text != null
           ? Identicon(text)
           : Center(
-        child: Text("?"),
-      ),
+              child: Text("?"),
+            ),
     );
   }
 }

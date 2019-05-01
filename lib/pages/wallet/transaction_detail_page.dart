@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
+import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:kaminari_wallet/widgets/seperated_list_view.dart';
 import 'package:kaminari_wallet/widgets/wallet/amount_label.dart';
 import 'package:groovin_widgets/groovin_expansion_tile.dart';
@@ -15,40 +16,36 @@ class TransactionDetailPage extends StatelessWidget {
     var time = DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
     var prettyTimestamp = DateFormat.yMMMd().format(time);
 
-    List<Step> steps = [
-      Step(
-        title: Text("You"),
-        content: Container(),
-      )
-    ];
-    if (tx.route != null) {
-      tx.route.forEach(
-        (route) {
-          steps.add(
-            Step(
-              title: Column(
-                children: <Widget>[
-                  Text("${route.substring(0, (route.length ~/ 2))}"),
-                  Text("${route.substring((route.length ~/ 2))}"),
-                ],
-              ),
-              content: Container(),
-            ),
-          );
-        },
-      );
-      steps[steps.length - 1] = Step(
-        title: Text("Destination"),
-        content: Container(),
-      );
-    }
+//    if (tx.route != null) {
+//      tx.route.forEach(
+//        (route) {
+//          steps.add(
+//            Step(
+//              title: Column(
+//                children: <Widget>[
+//                  Text("${route.substring(0, (route.length ~/ 2))}"),
+//                  Text("${route.substring((route.length ~/ 2))}"),
+//                ],
+//              ),
+//              content: Container(),
+//            ),
+//          );
+//        },
+//      );
+//      steps[steps.length - 1] = Step(
+//        title: Text("Destination"),
+//        content: Container(),
+//      );
+//    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Transaction Details"),
       ),
       body: SeperatedListView(
-        divider: Divider(height: 0.0,),
+        divider: Divider(
+          height: 0.0,
+        ),
         children: <Widget>[
           ListTile(
             title: Text("Amount"),
@@ -71,15 +68,37 @@ class TransactionDetailPage extends StatelessWidget {
                   title: Text("Route"),
                   children: <Widget>[
                     Divider(),
-                    Stepper(
-                      currentStep: steps.length - 1,
-                      steps: steps,
-                      controlsBuilder: (BuildContext context,
-                          {VoidCallback onStepContinue,
-                          VoidCallback onStepCancel}) {
-                        return Container();
-                      },
-                    )
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                      child: ListView.separated(
+                        physics: ClampingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: tx.route.length,
+                        itemBuilder: (context, i) {
+                          var node = tx.route[i];
+                          return ListTile(
+                            title: Text("Bob"),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "${node.substring(0, (node.length ~/ 2))}",
+                                  style: TextStyle(fontFamily: "RobotoMono"),
+                                ),
+                                Text(
+                                  "${node.substring((node.length ~/ 2))}",
+                                  style: TextStyle(fontFamily: "RobotoMono"),
+                                ),
+                              ],
+                            ),
+                            leading: RoundedIdenticon(node),
+                          );
+                        },
+                        separatorBuilder: (context, i) {
+                          return Divider();
+                        },
+                      ),
+                    ),
                   ],
                 )
               : null,
