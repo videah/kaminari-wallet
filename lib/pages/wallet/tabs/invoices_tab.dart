@@ -19,10 +19,17 @@ class InvoicesTab extends StatelessWidget {
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   Invoice invoice = snapshot.data[index];
+                  var status = InvoiceStatus.pending;
+
+                  var now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                  var expiryTime = (invoice.creationDate + invoice.expiry);
+                  if (now > expiryTime.toInt()) status = InvoiceStatus.expired;
+                  if (invoice.settled) status = InvoiceStatus.paid;
+
                   return InvoiceTile(
-                    name: "Invoice",
                     description: invoice.memo,
                     amount: invoice.value.toInt(),
+                    status: status,
                   );
                 },
               );
