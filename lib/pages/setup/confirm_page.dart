@@ -59,78 +59,79 @@ class ConfirmPageState extends State<ConfirmPage> {
         stream: bloc.info,
         builder: (context, snapshot) {
           GetInfoResponse node = snapshot.data;
-          if (snapshot.hasData) {
-            return Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    "Does this look right?",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    children: <Widget>[
-                      Center(
-                        child: RoundedIdenticon(node.identityPubkey, scale: 150,),
-                      ),
-                      ListTile(
-                        title: Text("Name"),
-                        subtitle: Text("${node.alias}"),
-                      ),
-                      ListTile(
-                        title: Text("Public Key"),
-                        subtitle: Text("${node.identityPubkey}"),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
-          } else {
+          if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Does this look right?",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    Center(
+                      child: RoundedIdenticon(
+                        node.identityPubkey,
+                        scale: 150,
+                      ),
+                    ),
+                    ListTile(
+                      title: Text("Name"),
+                      subtitle: Text("${node.alias}"),
+                    ),
+                    ListTile(
+                      title: Text("Public Key"),
+                      subtitle: Text("${node.identityPubkey}"),
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
         },
       ),
       bottomNavigationBar: StreamBuilder(
         stream: bloc.info,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return BottomButtonBar(
-              children: <Widget>[
-                FillIconButton(
-                  icon: Icon(Icons.close),
-                  backgroundColor: Colors.red,
-                  child: Text("No"),
-                  onTap: () {},
-                ),
-                FillIconButton(
-                  icon: Icon(Icons.check),
-                  backgroundColor: Colors.green,
-                  child: Text("Yes"),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return BlocProvider(
-                            bloc: MainnetWarningBloc(
-                              bloc.lndOptions,
-                            ),
-                            child: MainnetWarningPage(),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                )
-              ],
-            );
-          } else {
-            return Container();
+          if (!snapshot.hasData) {
+            return BottomAppBar();
           }
+          return BottomButtonBar(
+            children: <Widget>[
+              FillIconButton(
+                icon: Icon(Icons.close),
+                backgroundColor: Colors.red,
+                child: Text("No"),
+                onTap: () {},
+              ),
+              FillIconButton(
+                icon: Icon(Icons.check),
+                backgroundColor: Colors.green,
+                child: Text("Yes"),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BlocProvider(
+                          bloc: MainnetWarningBloc(
+                            bloc.lndOptions,
+                          ),
+                          child: MainnetWarningPage(),
+                        );
+                      },
+                    ),
+                  );
+                },
+              )
+            ],
+          );
         },
       ),
     );
