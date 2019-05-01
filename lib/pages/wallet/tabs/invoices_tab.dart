@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
-import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 
 class InvoicesTab extends StatelessWidget {
   @override

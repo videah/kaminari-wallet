@@ -135,7 +135,7 @@ class ReceiveLightningPageState extends State<ReceiveLightningPage> {
             icon: Icon(FontAwesomeIcons.fileInvoice),
             child: Text("Create Invoice"),
             onTap: () {
-              if (_formKey.currentState.validate()) ;
+              if (_formKey.currentState.validate());
             },
           )
         ],

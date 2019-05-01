@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -67,10 +64,6 @@ class ConnectMethodPage extends StatelessWidget {
       Scaffold.of(context).removeCurrentSnackBar();
       final uri = await Clipboard.getData(Clipboard.kTextPlain);
       final lndOptions = LNDConnect.decode(uri.text);
-
-      final certificate = utf8.encode(lndOptions.cert);
-      final macaroon = hex.encode(base64.decode(lndOptions.macaroon));
-
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -106,7 +99,7 @@ class ConnectMethodPage extends StatelessWidget {
           ),
         ),
       );
-    } on PlatformException catch (e) {
+    } on PlatformException {
       showDialog(
         context: context,
         builder: (context) {
