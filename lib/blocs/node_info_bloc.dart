@@ -1,5 +1,5 @@
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class NodeInfoBloc extends LightningBloc {

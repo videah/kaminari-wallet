@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/wallet/invoice_tile.dart';
 
 class InvoicesTab extends StatelessWidget {
@@ -24,7 +24,7 @@ class InvoicesTab extends StatelessWidget {
                   var now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
                   var expiryTime = (invoice.creationDate + invoice.expiry);
                   if (now > expiryTime.toInt()) status = InvoiceStatus.expired;
-                  if (invoice.settled) status = InvoiceStatus.paid;
+                  if (invoice.hasSettleDate()) status = InvoiceStatus.paid;
 
                   return InvoiceTile(
                     description: invoice.memo,

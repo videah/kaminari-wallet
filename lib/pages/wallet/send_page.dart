@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/send_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/pages/wallet/payment_error_page.dart';
 import 'package:kaminari_wallet/utils/animations.dart';
 import 'package:kaminari_wallet/widgets/bottom_button_bar.dart';

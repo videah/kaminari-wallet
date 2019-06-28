@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:grpc/grpc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 import 'package:rxdart/rxdart.dart';
 

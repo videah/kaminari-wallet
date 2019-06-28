@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/node_info_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/pages/settings/node_info/node_qr_page.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

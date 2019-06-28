@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:convert/convert.dart';
 import 'package:kaminari_wallet/blocs/lightning_bloc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -60,7 +60,7 @@ class MainWalletBloc extends LightningBloc {
   }
 
   void _handleNewInvoice(Invoice invoice) async {
-    if (invoice.settled) {
+    if (invoice.hasSettleDate()) {
       var invoiceItem = HistoryItem(
         name: "Anonymous",
         memo: invoice.memo,
@@ -167,7 +167,7 @@ class MainWalletBloc extends LightningBloc {
     _invoicesSubject.add(_invoices);
 
     List<HistoryItem> _historyItems = [];
-    _invoices.where((invoice) => invoice.settled).forEach(
+    _invoices.where((invoice) => invoice.hasSettleDate()).forEach(
           (tx) => _historyItems.add(
                 HistoryItem(
                   name: "Anonymous",

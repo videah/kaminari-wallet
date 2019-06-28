@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grpc/grpc.dart';
-import 'package:kaminari_wallet/generated/protos/lnrpc.pbgrpc.dart';
+import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
 class LightningSingleton {
