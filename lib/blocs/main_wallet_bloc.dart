@@ -188,7 +188,8 @@ class MainWalletBloc extends LightningBloc {
         var request = NodeInfoRequest();
         request.pubKey = payment.path.last;
         var response = await lightning.client.getNodeInfo(request);
-        _nameCache.addAll({payment.path.last: response.node.alias});
+        var alias = response.node.alias;
+        _nameCache.addAll({payment.path.last: alias.isNotEmpty ? alias : "Unknown Node"});
       }
     }
     _namesSubject.add(_nameCache);
