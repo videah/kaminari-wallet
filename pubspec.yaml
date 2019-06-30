@@ -33,7 +33,11 @@ dependencies:
   datetime_picker_formfield: ^0.1.8
   animated_stream_list: ^0.0.4
   date_util: ^0.1.4
-  flutter_qr_reader: 1.0.2
+  qr_code_scanner:
+    git:
+      url: https://github.com/c0h1b4/qr_code_scanner
+      ref: ffb8d6c1f3cda65ba33a591beb26c0b770b58c7d
+  image_picker: ^0.6.0+10
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
