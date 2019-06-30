@@ -62,73 +62,79 @@ class TransactionDetailPage extends StatelessWidget {
             title: Text("Date/Time"),
             subtitle: Text("$prettyTimestamp"),
           ),
-          tx.route != null
-              ? GroovinExpansionTile(
-                  boxDecoration: null,
-                  title: Text("Route"),
-                  children: <Widget>[
-                    Divider(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                      child: ListView.separated(
-                        physics: ClampingScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: tx.route.length,
-                        itemBuilder: (context, i) {
-                          var node = tx.route[i];
-                          return ListTile(
-                            title: Text("Bob"),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "${node.substring(0, (node.length ~/ 2))}",
-                                  style: TextStyle(fontFamily: "RobotoMono"),
-                                ),
-                                Text(
-                                  "${node.substring((node.length ~/ 2))}",
-                                  style: TextStyle(fontFamily: "RobotoMono"),
-                                ),
-                              ],
+          if (tx.confirmations != null) ...[
+            ListTile(
+              title: Text("Confirmations"),
+              subtitle: Text("${tx.confirmations}"),
+            )
+          ],
+          if (tx.route != null) ...[
+            GroovinExpansionTile(
+              boxDecoration: null,
+              title: Text("Route"),
+              children: <Widget>[
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                  child: ListView.separated(
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: tx.route.length,
+                    itemBuilder: (context, i) {
+                      var node = tx.route[i];
+                      return ListTile(
+                        title: Text("Bob"),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "${node.substring(0, (node.length ~/ 2))}",
+                              style: TextStyle(fontFamily: "RobotoMono"),
                             ),
-                            leading: RoundedIdenticon(node),
-                          );
-                        },
-                        separatorBuilder: (context, i) {
-                          return Divider();
-                        },
-                      ),
-                    ),
-                  ],
-                )
-              : null,
-          tx.receipt != null
-              ? InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Center(child: Text("Preimage")),
-                      subtitle: Column(
-                        children: <Widget>[
-                          Text(
-                            "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
-                            style: TextStyle(
-                              fontFamily: "RobotoMono",
+                            Text(
+                              "${node.substring((node.length ~/ 2))}",
+                              style: TextStyle(fontFamily: "RobotoMono"),
                             ),
-                          ),
-                          Text(
-                            "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
-                            style: TextStyle(
-                              fontFamily: "RobotoMono",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                          ],
+                        ),
+                        leading: RoundedIdenticon(node),
+                      );
+                    },
+                    separatorBuilder: (context, i) {
+                      return Divider();
+                    },
                   ),
-                )
-              : null,
+                ),
+              ],
+            )
+          ],
+          if (tx.receipt != null) ...[
+            InkWell(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Center(child: Text("Preimage")),
+                  subtitle: Column(
+                    children: <Widget>[
+                      Text(
+                        "${tx.receipt.substring(0, (tx.receipt.length ~/ 2))}",
+                        style: TextStyle(
+                          fontFamily: "RobotoMono",
+                        ),
+                      ),
+                      Text(
+                        "${tx.receipt.substring((tx.receipt.length ~/ 2))}",
+                        style: TextStyle(
+                          fontFamily: "RobotoMono",
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ]
         ],
       ),
     );

@@ -81,6 +81,7 @@ class MainWalletBloc extends LightningBloc {
       amount: tx.amount.toInt(),
       timestamp: tx.timeStamp.toInt(),
       direction: tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
+      confirmations: tx.numConfirmations,
     );
     _newTransactionSubject.add(transactionItem);
     _syncBalance();
@@ -132,6 +133,7 @@ class MainWalletBloc extends LightningBloc {
               memo: "Chain Transaction",
               amount: tx.amount.toInt(),
               timestamp: tx.timeStamp.toInt(),
+              confirmations: tx.numConfirmations,
               direction:
                   tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
             ),
@@ -224,6 +226,7 @@ class HistoryItem {
   final TxStatus direction;
   final String receipt;
   final List<String> route;
+  final int confirmations;
 
   HistoryItem({
     this.direction,
@@ -234,5 +237,6 @@ class HistoryItem {
     this.userId,
     this.receipt,
     this.route,
+    this.confirmations,
   });
 }
