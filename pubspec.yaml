@@ -33,6 +33,7 @@ dependencies:
   datetime_picker_formfield: ^0.1.8
   animated_stream_list: ^0.0.4
   date_util: ^0.1.4
+  sliver_fill_remaining_box_adapter: ^0.1.1
   qr_code_scanner:
     git:
       url: https://github.com/c0h1b4/qr_code_scanner

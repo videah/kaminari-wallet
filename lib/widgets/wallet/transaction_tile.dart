@@ -27,9 +27,17 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        "${title ?? "Unknown"}",
-        style: TextStyle(fontWeight: FontWeight.bold),
+      title: AnimatedCrossFade(
+        duration: const Duration(milliseconds: 500),
+        firstChild: Text(
+          "Unknown",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        secondChild: Text(
+          "${title ?? "Unknown"}",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        crossFadeState: title == "Unknown" ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       ),
       subtitle: subtitle ?? null,
       trailing: AmountLabel(

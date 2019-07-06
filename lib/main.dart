@@ -10,31 +10,28 @@ import 'package:kaminari_wallet/pages/wallet/receive_lightning_page.dart';
 
 void main() => runApp(KaminariApp());
 
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
 class KaminariApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Kaminari Wallet",
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+    return BlocProvider<MainWalletBloc>(
+      bloc: MainWalletBloc(),
+      child: MaterialApp(
+        title: "Kaminari Wallet",
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        routes: {
+          "/": (context) => MainWalletPage(),
+          "/initial-router": (context) => BlocProvider<InitialRoutingBloc>(
+                bloc: InitialRoutingBloc(),
+                child: InitialRoutingPage(),
+              ),
+          "/setup": (context) => WelcomePage(),
+          "/payment-success": (context) => PaymentSuccessPage(),
+          "/create-invoice": (context) => ReceiveLightningPage(),
+        },
+        initialRoute: "/initial-router",
       ),
-      navigatorObservers: [routeObserver],
-      routes: {
-        "/": (context) => BlocProvider<MainWalletBloc>(
-              bloc: MainWalletBloc(),
-              child: MainWalletPage(),
-            ),
-        "/initial-router": (context) => BlocProvider<InitialRoutingBloc>(
-              bloc: InitialRoutingBloc(),
-              child: InitialRoutingPage(),
-            ),
-        "/setup": (context) => WelcomePage(),
-        "/payment-success": (context) => PaymentSuccessPage(),
-        "/create-invoice": (context) => ReceiveLightningPage(),
-      },
-      initialRoute: "/initial-router",
     );
   }
 }

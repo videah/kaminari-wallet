@@ -36,17 +36,25 @@ class MainWalletBloc extends LightningBloc {
   Sink<bool> get sync => _syncController.sink;
 
   MainWalletBloc() {
-    _setup();
+    setup();
   }
 
-  void _setup() async {
-    await lightning.initialize();
-    _syncBalance();
+  void setup() async {
+    await initLightning();
+    await syncWithNode();
+    await setupSubscriptions();
+  }
+
+  Future syncWithNode() async {
+    await _syncBalance();
     await _syncTransactions();
     await _syncPayments();
     await _syncInvoices();
     await _sortHistory();
     await _syncNames();
+  }
+
+  Future setupSubscriptions() async {
     _syncController.stream.listen((_) async {
       await _syncNewPayments();
       await _syncNames();
@@ -57,6 +65,10 @@ class MainWalletBloc extends LightningBloc {
     lightning.client
         .subscribeInvoices((InvoiceSubscription()))
         .listen(_handleNewInvoice);
+  }
+
+  Future initLightning() async {
+    await lightning.initialize();
   }
 
   void _handleNewInvoice(Invoice invoice) async {
@@ -107,7 +119,7 @@ class MainWalletBloc extends LightningBloc {
     }
   }
 
-  void _syncBalance() async {
+  Future _syncBalance() async {
     var chainResponse = await lightning.client.walletBalance(
       WalletBalanceRequest(),
     );
@@ -128,16 +140,15 @@ class MainWalletBloc extends LightningBloc {
     List<HistoryItem> _historyItems = [];
     _transactions.forEach(
       (tx) => _historyItems.add(
-            HistoryItem(
-              name: "Anonymous",
-              memo: "Chain Transaction",
-              amount: tx.amount.toInt(),
-              timestamp: tx.timeStamp.toInt(),
-              confirmations: tx.numConfirmations,
-              direction:
-                  tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
-            ),
-          ),
+        HistoryItem(
+          name: "Anonymous",
+          memo: "Chain Transaction",
+          amount: tx.amount.toInt(),
+          timestamp: tx.timeStamp.toInt(),
+          confirmations: tx.numConfirmations,
+          direction: tx.amount > 0 ? TxStatus.receiving : TxStatus.sending,
+        ),
+      ),
     );
     _history.addAll(_historyItems);
   }
@@ -148,17 +159,17 @@ class MainWalletBloc extends LightningBloc {
     List<HistoryItem> _historyItems = [];
     _payments.forEach(
       (tx) => _historyItems.add(
-            HistoryItem(
-              name: "Unknown",
-              memo: "Lightning Transaction",
-              amount: tx.valueSat.toInt(),
-              userId: tx.path.last,
-              timestamp: tx.creationDate.toInt(),
-              direction: TxStatus.sending,
-              receipt: tx.paymentPreimage,
-              route: tx.path,
-            ),
-          ),
+        HistoryItem(
+          name: "Unknown",
+          memo: "Lightning Transaction",
+          amount: tx.valueSat.toInt(),
+          userId: tx.path.last,
+          timestamp: tx.creationDate.toInt(),
+          direction: TxStatus.sending,
+          receipt: tx.paymentPreimage,
+          route: tx.path,
+        ),
+      ),
     );
     _history.addAll(_historyItems);
   }
@@ -171,15 +182,15 @@ class MainWalletBloc extends LightningBloc {
     List<HistoryItem> _historyItems = [];
     _invoices.where((invoice) => invoice.hasSettleDate()).forEach(
           (tx) => _historyItems.add(
-                HistoryItem(
-                  name: "Anonymous",
-                  memo: tx.memo,
-                  amount: tx.value.toInt(),
-                  timestamp: tx.creationDate.toInt(),
-                  direction: TxStatus.receiving,
-                  receipt: hex.encode(tx.rPreimage),
-                ),
-              ),
+            HistoryItem(
+              name: "Anonymous",
+              memo: tx.memo,
+              amount: tx.value.toInt(),
+              timestamp: tx.creationDate.toInt(),
+              direction: TxStatus.receiving,
+              receipt: hex.encode(tx.rPreimage),
+            ),
+          ),
         );
     _history.addAll(_historyItems);
   }
@@ -191,7 +202,8 @@ class MainWalletBloc extends LightningBloc {
         request.pubKey = payment.path.last;
         var response = await lightning.client.getNodeInfo(request);
         var alias = response.node.alias;
-        _nameCache.addAll({payment.path.last: alias.isNotEmpty ? alias : "Unknown Node"});
+        _nameCache.addAll(
+            {payment.path.last: alias.isNotEmpty ? alias : "Unknown Node"});
       }
     }
     _namesSubject.add(_nameCache);
@@ -206,14 +218,22 @@ class MainWalletBloc extends LightningBloc {
 
   @override
   void dispose() {
-    _balanceSubject.close();
-    _transactionSubject.close();
-    _historySubject.close();
-    _invoicesSubject.close();
-    _newTransactionSubject.close();
-    _namesSubject.close();
-    _syncController.close();
-    lightning.client.closeChannel(CloseChannelRequest());
+//    _balanceSubject.close();
+//    _transactionSubject.close();
+//    _historySubject.close();
+//    _invoicesSubject.close();
+//    _newTransactionSubject.close();
+//    _namesSubject.close();
+//    _syncController.close();
+
+    _balance = null;
+    _balanceSubject.add("");
+    _transactions.clear();
+    _payments.clear();
+    _invoices.clear();
+    _history.clear();
+    _nameCache.clear();
+
   }
 }
 

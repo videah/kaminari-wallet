@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/initial_routing_bloc.dart';
+import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/blocs/node_info_bloc.dart';
 import 'package:kaminari_wallet/pages/initial_routing_page.dart';
 import 'package:kaminari_wallet/pages/settings/node_info/node_info_page.dart';
@@ -22,6 +23,7 @@ class SettingsPage extends StatelessWidget {
             onTap: () {
               var storage = FlutterSecureStorage();
               storage.deleteAll();
+             BlocProvider.of<MainWalletBloc>(context).dispose();
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) => BlocProvider(

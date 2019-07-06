@@ -44,34 +44,27 @@ class TransactionsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildTile(
-      BuildContext context, HistoryItem tx, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: FadeTransition(
-        opacity: animation,
-        child: StreamBuilder<Map<String, String>>(
-          stream: BlocProvider.of<MainWalletBloc>(context).names,
-          builder: (context, snapshot) {
-            var name;
-            if (snapshot.hasData) name = snapshot.data[tx.userId];
-            return TransactionTile(
-              title: name != null ? "$name" : tx.name,
-              subtitle: Text("${tx.memo}"),
-              userId: tx.userId,
-              amount: tx.amount,
-              direction: tx.direction,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => TransactionDetailPage(tx: tx),
-                  ),
-                );
-              },
+  Widget _buildTile(BuildContext context, HistoryItem tx) {
+    return StreamBuilder<Map<String, String>>(
+      stream: BlocProvider.of<MainWalletBloc>(context).names,
+      builder: (context, snapshot) {
+        var name;
+        if (snapshot.hasData) name = snapshot.data[tx.userId];
+        return TransactionTile(
+          title: name != null ? "$name" : tx.name,
+          subtitle: Text("${tx.memo}"),
+          userId: tx.userId,
+          amount: tx.amount,
+          direction: tx.direction,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => TransactionDetailPage(tx: tx),
+              ),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -84,7 +77,7 @@ class TransactionsTab extends StatelessWidget {
       onRefresh: () async {
         bloc.sync.add(true);
       },
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<List<HistoryItem>>(
         stream: bloc.history,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -92,11 +85,12 @@ class TransactionsTab extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          return AnimatedStreamList<HistoryItem>(
-            streamList: history,
-            itemBuilder: (tx, index, context, animation) {
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              HistoryItem tx = snapshot.data[index];
               var divider = _buildDivider(tx, _previousTx, index);
-              var tile = _buildTile(context, tx, animation);
+              var tile = _buildTile(context, tx);
               _previousTx = tx;
 
               return Column(
@@ -107,7 +101,6 @@ class TransactionsTab extends StatelessWidget {
                 ],
               );
             },
-            itemRemovedBuilder: (tx, index, context, animation) {},
           );
         },
       ),
