@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kaminari_wallet/widgets/rounded_icon.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
 import 'package:kaminari_wallet/widgets/wallet/amount_label.dart';
 
@@ -37,14 +39,27 @@ class TransactionTile extends StatelessWidget {
           "${title ?? "Unknown"}",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        crossFadeState: title == "Unknown" ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        crossFadeState: title == "Unknown"
+            ? CrossFadeState.showFirst
+            : CrossFadeState.showSecond,
       ),
       subtitle: subtitle ?? null,
       trailing: AmountLabel(
         text: amount.toString(),
         direction: direction,
       ),
-      leading: RoundedIdenticon(userId),
+      leading: userId != null
+          ? RoundedIdenticon(userId)
+          : RoundedIcon(
+              scale: 40,
+              color: Colors.orange,
+              child: Center(
+                child: Icon(
+                  FontAwesomeIcons.link,
+                  color: Colors.white,
+                ),
+              ),
+            ),
       onTap: onTap,
     );
   }

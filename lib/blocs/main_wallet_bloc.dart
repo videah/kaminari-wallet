@@ -15,6 +15,7 @@ class MainWalletBloc extends LightningBloc {
   List<Invoice> _invoices;
   List<HistoryItem> _history = [];
   Map<String, String> _nameCache = {};
+  Map<String, String> _descriptionCache = {};
 
   // Info
   GetInfoResponse _nodeInfo;
@@ -93,6 +94,21 @@ class MainWalletBloc extends LightningBloc {
       );
     }
     return _nameCache[pub];
+  }
+  
+  Future<String> getDescriptionFromInvoice(String invoice) async {
+    if (!_descriptionCache.containsKey(invoice)) {
+      var request = PayReqString();
+      request.payReq = invoice;
+      var response = await lightning.client.decodePayReq(request);
+      var description = response.description;
+      _descriptionCache.addAll(
+        {
+          invoice: description.isNotEmpty ? description : "Lightning Payment"
+        }
+      );
+    }
+    return _descriptionCache[invoice];
   }
 
   GetInfoResponse getNodeInfo() {
@@ -185,11 +201,12 @@ class MainWalletBloc extends LightningBloc {
     var response = await lightning.client.listPayments(ListPaymentsRequest());
     _payments = response.payments.toList();
     List<HistoryItem> _historyItems = [];
-    _payments.forEach(
-      (tx) => _historyItems.add(
+    for (var tx in _payments) {
+      var memo = await getDescriptionFromInvoice(tx.paymentRequest);
+      _historyItems.add(
         HistoryItem(
           name: "Unknown",
-          memo: "Lightning Transaction",
+          memo: memo,
           amount: tx.valueSat.toInt(),
           userId: tx.path.last,
           timestamp: tx.creationDate.toInt(),
@@ -197,8 +214,8 @@ class MainWalletBloc extends LightningBloc {
           receipt: tx.paymentPreimage,
           route: tx.path,
         ),
-      ),
-    );
+      );
+    }
     _history.addAll(_historyItems);
   }
 
