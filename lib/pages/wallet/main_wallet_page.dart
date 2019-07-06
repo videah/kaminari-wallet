@@ -13,7 +13,6 @@ import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 import 'package:sliver_fill_remaining_box_adapter/sliver_fill_remaining_box_adapter.dart';
 
 class MainWalletPage extends StatelessWidget {
-
   Widget _buildTimestamp(BuildContext context, timestamp) {
     var date = _getDate(timestamp);
     var prettyDate = DateFormat.yMMMd().format(date);
@@ -81,7 +80,7 @@ class MainWalletPage extends StatelessWidget {
         slivers: <Widget>[
           SliverAppBar(
             automaticallyImplyLeading: false,
-            expandedHeight: 200.0,
+            expandedHeight: 140.0,
             pinned: true,
             actions: <Widget>[
               IconButton(
@@ -94,48 +93,56 @@ class MainWalletPage extends StatelessWidget {
             ],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: StreamBuilder<String>(
-                stream: bloc.balance,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      "${snapshot.data}",
-                      style: TextStyle(fontSize: 24.0),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  StreamBuilder<String>(
+                    stream: bloc.balance,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          "${snapshot.data}",
+                          style: TextStyle(fontSize: 24.0),
+                          textAlign: TextAlign.center,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ),
           StreamBuilder<List<HistoryItem>>(
-              stream: bloc.history,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return SliverFillRemainingBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate((context, i) {
-                    HistoryItem tx = snapshot.data[i];
-                    var divider = _buildDivider(tx, _previousTx, i);
-                    var tile = _buildTile(context, tx);
-                    _previousTx = tx;
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        divider,
-                        tile,
-                      ],
-                    );
-                  }, childCount: snapshot.data.length),
+            stream: bloc.history,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return SliverFillRemainingBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
-              })
+              }
+              return SliverList(
+                delegate: SliverChildBuilderDelegate((context, i) {
+                  HistoryItem tx = snapshot.data[i];
+                  var divider = _buildDivider(tx, _previousTx, i);
+                  var tile = _buildTile(context, tx);
+                  _previousTx = tx;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      divider,
+                      tile,
+                    ],
+                  );
+                }, childCount: snapshot.data.length),
+              );
+            },
+          )
         ],
       ),
       bottomNavigationBar: Column(

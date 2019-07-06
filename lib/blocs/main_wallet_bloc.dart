@@ -7,12 +7,20 @@ import 'package:kaminari_wallet/widgets/wallet/transaction_tile.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MainWalletBloc extends LightningBloc {
+
+  // Wallet
   String _balance;
   List<Transaction> _transactions;
   List<Payment> _payments;
   List<Invoice> _invoices;
   List<HistoryItem> _history = [];
   Map<String, String> _nameCache = {};
+
+  // Info
+  GetInfoResponse _nodeInfo;
+
+  final _nodeInfoSubject = BehaviorSubject<GetInfoResponse>();
+  Stream get nodeInfo => _nodeInfoSubject.stream;
 
   final _balanceSubject = BehaviorSubject<String>();
   Stream get balance => _balanceSubject.stream;
@@ -46,6 +54,7 @@ class MainWalletBloc extends LightningBloc {
   }
 
   Future syncWithNode() async {
+    await _getNodeInfo();
     await _syncBalance();
     await _syncTransactions();
     await _syncPayments();
@@ -69,6 +78,25 @@ class MainWalletBloc extends LightningBloc {
 
   Future initLightning() async {
     await lightning.initialize();
+  }
+
+  Future<String> getNameFromPubKey(String pub) async {
+    if (!_nameCache.containsKey(pub)) {
+      var request = NodeInfoRequest();
+      request.pubKey = pub;
+      var response = await lightning.client.getNodeInfo(request);
+      var alias = response.node.alias;
+      _nameCache.addAll(
+        {
+          pub: alias.isNotEmpty ? alias : "Unknown Node",
+        },
+      );
+    }
+    return _nameCache[pub];
+  }
+
+  GetInfoResponse getNodeInfo() {
+    return _nodeInfo;
   }
 
   void _handleNewInvoice(Invoice invoice) async {
@@ -197,14 +225,7 @@ class MainWalletBloc extends LightningBloc {
 
   Future _syncNames() async {
     for (var payment in _payments) {
-      if (!_nameCache.containsKey(payment.path.last)) {
-        var request = NodeInfoRequest();
-        request.pubKey = payment.path.last;
-        var response = await lightning.client.getNodeInfo(request);
-        var alias = response.node.alias;
-        _nameCache.addAll(
-            {payment.path.last: alias.isNotEmpty ? alias : "Unknown Node"});
-      }
+      getNameFromPubKey(payment.path.last);
     }
     _namesSubject.add(_nameCache);
   }
@@ -214,6 +235,11 @@ class MainWalletBloc extends LightningBloc {
       return a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0;
     });
     _historySubject.add(_history);
+  }
+
+  Future _getNodeInfo() async {
+    _nodeInfo = await lightning.client.getInfo(GetInfoRequest());
+    _nodeInfoSubject.add(_nodeInfo);
   }
 
   @override
@@ -233,7 +259,6 @@ class MainWalletBloc extends LightningBloc {
     _invoices.clear();
     _history.clear();
     _nameCache.clear();
-
   }
 }
 

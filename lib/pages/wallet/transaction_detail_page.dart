@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/widgets/rounded_identicon.dart';
@@ -15,29 +16,7 @@ class TransactionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var time = DateTime.fromMillisecondsSinceEpoch(tx.timestamp * 1000);
     var prettyTimestamp = DateFormat.yMMMd().format(time);
-
-//    if (tx.route != null) {
-//      tx.route.forEach(
-//        (route) {
-//          steps.add(
-//            Step(
-//              title: Column(
-//                children: <Widget>[
-//                  Text("${route.substring(0, (route.length ~/ 2))}"),
-//                  Text("${route.substring((route.length ~/ 2))}"),
-//                ],
-//              ),
-//              content: Container(),
-//            ),
-//          );
-//        },
-//      );
-//      steps[steps.length - 1] = Step(
-//        title: Text("Destination"),
-//        content: Container(),
-//      );
-//    }
-
+    var bloc = BlocProvider.of<MainWalletBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Transaction Details"),
@@ -79,11 +58,22 @@ class TransactionDetailPage extends StatelessWidget {
                   child: ListView.separated(
                     physics: ClampingScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: tx.route.length,
+                    itemCount: tx.route.length + 1,
                     itemBuilder: (context, i) {
-                      var node = tx.route[i];
+                      var node;
+                      if (i == 0) {
+                        node = bloc.getNodeInfo().identityPubkey;
+                      } else {
+                        node = tx.route[i - 1];
+                      }
                       return ListTile(
-                        title: Text("Bob"),
+                        title: FutureBuilder(
+                          future: bloc.getNameFromPubKey(node),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) return Text("Unknown Node");
+                            return Text("${snapshot.data}");
+                          },
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
