@@ -55,8 +55,8 @@ class MainWalletBloc extends LightningBloc {
   }
 
   Future syncWithNode() async {
-    await _getNodeInfo();
-    await _syncBalance();
+    _getNodeInfo();
+    _syncBalance();
     await _syncTransactions();
     await _syncPayments();
     await _syncInvoices();
@@ -65,10 +65,6 @@ class MainWalletBloc extends LightningBloc {
   }
 
   Future setupSubscriptions() async {
-    _syncController.stream.listen((_) async {
-      await _syncNewPayments();
-      await _syncNames();
-    });
     lightning.client
         .subscribeTransactions(GetTransactionsRequest())
         .listen(_handleNewTransaction);
@@ -143,24 +139,14 @@ class MainWalletBloc extends LightningBloc {
     _syncBalance();
   }
 
-  Future _syncNewPayments() async {
+  Future syncNewPayments() async {
     var response = await lightning.client.listPayments(ListPaymentsRequest());
     var newPayments = response.payments;
     newPayments.removeWhere((payment) => _payments.contains(payment));
-    for (var tx in newPayments) {
-      _payments.add(tx);
-      var paymentItem = HistoryItem(
-        name: "Unknown",
-        memo: "Lightning Transaction",
-        amount: tx.valueSat.toInt(),
-        userId: tx.path.last,
-        timestamp: tx.creationDate.toInt(),
-        direction: TxStatus.sending,
-        receipt: tx.paymentPreimage,
-        route: tx.path,
-      );
-      _newTransactionSubject.add(paymentItem);
-    }
+    _syncBalance();
+    await _addPaymentsToHistory(newPayments);
+    await _syncNames();
+    await _sortHistory();
   }
 
   Future _syncBalance() async {
@@ -197,11 +183,9 @@ class MainWalletBloc extends LightningBloc {
     _history.addAll(_historyItems);
   }
 
-  Future _syncPayments() async {
-    var response = await lightning.client.listPayments(ListPaymentsRequest());
-    _payments = response.payments.toList();
+  Future _addPaymentsToHistory(List<Payment> payments) async {
     List<HistoryItem> _historyItems = [];
-    for (var tx in _payments) {
+    for (var tx in payments) {
       var memo = await getDescriptionFromInvoice(tx.paymentRequest);
       _historyItems.add(
         HistoryItem(
@@ -216,7 +200,14 @@ class MainWalletBloc extends LightningBloc {
         ),
       );
     }
+    print("TESI");
     _history.addAll(_historyItems);
+  }
+
+  Future _syncPayments() async {
+    var response = await lightning.client.listPayments(ListPaymentsRequest());
+    _payments = response.payments.toList();
+    await _addPaymentsToHistory(_payments);
   }
 
   Future _syncInvoices() async {
@@ -251,6 +242,7 @@ class MainWalletBloc extends LightningBloc {
     _history.sort((a, b) {
       return a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0;
     });
+    print("SORTING AND PUSHING HISTORY");
     _historySubject.add(_history);
   }
 

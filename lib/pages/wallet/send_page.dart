@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 import 'package:kaminari_wallet/blocs/send_bloc.dart';
 import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/pages/wallet/payment_error_page.dart';
@@ -39,13 +40,14 @@ class SendPageState extends State<SendPage> with TickerProviderStateMixin {
     if (snapshot.hasData) {
       if (snapshot.data.paymentError == "" ||
           snapshot.data.paymentError == null) {
+        BlocProvider.of<MainWalletBloc>(context).syncNewPayments();
         Navigator.of(context).pushReplacementNamed("/payment-success");
       } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => PaymentErrorPage(
-                  error: snapshot.data.paymentError,
-                ),
+              error: snapshot.data.paymentError,
+            ),
           ),
         );
       }
@@ -115,7 +117,8 @@ class SendPageState extends State<SendPage> with TickerProviderStateMixin {
                                 child: Column(
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
                                       child: RoundedIdenticon(
                                         "${snapshot.data.destination}",
                                         scale: 80,
@@ -159,7 +162,8 @@ class SendPageState extends State<SendPage> with TickerProviderStateMixin {
                           children: <Widget>[
                             ListTile(
                               title: Text("Amount"),
-                              subtitle: Text("${snapshot.data.numSatoshis} sat"),
+                              subtitle:
+                                  Text("${snapshot.data.numSatoshis} sat"),
                             ),
                             snapshot.data.description != ""
                                 ? ListTile(
