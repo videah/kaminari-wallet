@@ -143,6 +143,7 @@ class MainWalletBloc extends LightningBloc {
     var response = await lightning.client.listPayments(ListPaymentsRequest());
     var newPayments = response.payments;
     newPayments.removeWhere((payment) => _payments.contains(payment));
+    _payments.addAll(newPayments);
     _syncBalance();
     await _addPaymentsToHistory(newPayments);
     await _syncNames();
