@@ -20,13 +20,17 @@ class SendModal extends StatelessWidget {
             height: 0.0,
           ),
           ListTile(
+            title: Text("Twitter"),
+            subtitle: Text("Send to Twitter username"),
+            leading: Icon(FontAwesomeIcons.twitter),
+          ),
+          ListTile(
             title: Text("QR Code"),
             subtitle: Text("Scan a payment request"),
             leading: Icon(FontAwesomeIcons.qrcode),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ScanInvoicePage())
-              );
+                  MaterialPageRoute(builder: (context) => ScanInvoicePage()));
             },
           ),
           ListTile(
@@ -34,17 +38,19 @@ class SendModal extends StatelessWidget {
             subtitle: Text("Paste a payment request"),
             leading: Icon(Icons.content_paste),
             onTap: () {
-              Clipboard.getData(Clipboard.kTextPlain).then((data) {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => BlocProvider(
-                      bloc: SendBloc("${data.text}"),
-                      child: SendPage(),
+              Clipboard.getData(Clipboard.kTextPlain).then(
+                (data) {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        bloc: SendBloc("${data.text}"),
+                        child: SendPage(),
+                      ),
                     ),
-                  ),
-                );
-              });
+                  );
+                },
+              );
             },
           ),
         ],
