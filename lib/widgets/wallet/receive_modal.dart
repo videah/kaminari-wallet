@@ -25,6 +25,7 @@ class ReceiveModal extends StatelessWidget {
               ),
             ),
             onTap: () {
+              Navigator.of(context).pop();
               Navigator.of(context).pushNamed("/create-invoice");
             },
           ),
