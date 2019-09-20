@@ -36,9 +36,9 @@ class AmountLabel extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .body1
-                .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
+                .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold, fontFamily: "RobotoMono"),
             children: [
-              TextSpan(text: " sat", style: TextStyle(fontSize: 13.0)),
+              TextSpan(text: " sat", style: TextStyle(fontSize: 13.0, fontFamily: "RobotoMono")),
             ],
           ),
         ),

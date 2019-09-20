@@ -1,5 +1,6 @@
 import 'package:date_util/date_util.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
@@ -82,37 +83,35 @@ class MainWalletPage extends StatelessWidget {
             automaticallyImplyLeading: false,
             expandedHeight: 140.0,
             pinned: true,
+            leading: IconButton(
+              icon: Icon(FontAwesomeIcons.fileInvoiceDollar),
+              tooltip: "Invoices",
+              onPressed: () {},
+            ),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.settings),
+                tooltip: "Settings",
                 onPressed: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SettingsPage()));
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
                 },
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  StreamBuilder<String>(
-                    stream: bloc.balance,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          "${snapshot.data}",
-                          style: TextStyle(fontSize: 24.0),
-                          textAlign: TextAlign.center,
-                        );
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
-                ],
+              title: StreamBuilder<String>(
+                stream: bloc.balance,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      "${snapshot.data}",
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               ),
             ),
           ),
