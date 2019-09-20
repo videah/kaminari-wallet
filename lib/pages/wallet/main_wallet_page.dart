@@ -83,10 +83,13 @@ class MainWalletPage extends StatelessWidget {
             automaticallyImplyLeading: false,
             expandedHeight: 140.0,
             pinned: true,
+            backgroundColor: Theme.of(context).accentColor,
             leading: IconButton(
               icon: Icon(FontAwesomeIcons.fileInvoiceDollar),
               tooltip: "Invoices",
-              onPressed: () {},
+              onPressed: () {
+
+              },
             ),
             actions: <Widget>[
               IconButton(
