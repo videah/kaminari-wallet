@@ -25,33 +25,35 @@ class InitialRoutingBloc extends Bloc {
   Future _initializeBoxes() async {
     // Generating and storing a secure key, used to securely store
     // data required to connect and authenticate with an LND instance.
-    var key;
-    if (debugDefaultTargetPlatformOverride == TargetPlatform.fuchsia) {
-      // We use SharedPreferences on desktop, since there's no plugin to do
-      // that using the OS's keystore yet. This shouldn't be a problem though.
-      print("We're on desktop");
-      var keystore = await SharedPreferences.getInstance();
-      var read = keystore.getString("hive-key");
-      key = read ?? base64.encode(Hive.generateSecureKey());
-      if (read == null) await keystore.setString("hive-key", key);
-    } else {
-      // On mobile we use the OS's secure keystore to store the key.
-      print("We're on mobile");
-      var keystore = FlutterSecureStorage();
-      var read = await keystore.read(key: "hive-key");
-      key = read ?? base64.encode(Hive.generateSecureKey());
-      if (read == null) await keystore.write(key: "hive-key", value: key);
+    if (!Hive.isBoxOpen("lndconnect") || !Hive.isBoxOpen("settings")) {
+      var key;
+      if (debugDefaultTargetPlatformOverride == TargetPlatform.fuchsia) {
+        // We use SharedPreferences on desktop, since there's no plugin to do
+        // that using the OS's keystore yet. This shouldn't be a problem though.
+        print("We're on desktop");
+        var keystore = await SharedPreferences.getInstance();
+        var read = keystore.getString("hive-key");
+        key = read ?? base64.encode(Hive.generateSecureKey());
+        if (read == null) await keystore.setString("hive-key", key);
+      } else {
+        // On mobile we use the OS's secure keystore to store the key.
+        print("We're on mobile");
+        var keystore = FlutterSecureStorage();
+        var read = await keystore.read(key: "hive-key");
+        key = read ?? base64.encode(Hive.generateSecureKey());
+        if (read == null) await keystore.write(key: "hive-key", value: key);
+      }
+
+      // We need a place to store the actual hivedb contents.
+      var dir = await getApplicationDocumentsDirectory();
+      Hive.init(dir.path);
+
+      // Open some boxes to store data in.
+      return Future.wait([
+        Hive.openBox("lndconnect", encryptionKey: base64.decode(key)),
+        Hive.openBox("settings", encryptionKey: base64.decode(key)),
+      ]);
     }
-
-    // We need a place to store the actual hivedb contents.
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-
-    // Open some boxes to store data in.
-    return Future.wait([
-      Hive.openBox("lndconnect", encryptionKey: base64.decode(key)),
-      Hive.openBox("settings", encryptionKey: base64.decode(key)),
-    ]);
   }
 
   void _checkForInitialRoute() async {

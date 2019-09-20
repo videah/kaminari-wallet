@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/initial_routing_bloc.dart';
+import 'package:kaminari_wallet/blocs/main_wallet_bloc.dart';
 
 class InitialRoutingPage extends StatefulWidget {
   @override
@@ -10,6 +11,13 @@ class InitialRoutingPage extends StatefulWidget {
 }
 
 class InitialRoutingPageState extends State<InitialRoutingPage> {
+
+  Future _goToMainWallet() async {
+    await Future.delayed(Duration(seconds: 1));
+    BlocProvider.of<MainWalletBloc>(context).setup();
+    Navigator.of(context).pushNamed("/");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -18,7 +26,7 @@ class InitialRoutingPageState extends State<InitialRoutingPage> {
         BlocProvider.of<InitialRoutingBloc>(context).route.listen(
           (route) {
             if (route == InitialRoute.home) {
-              Navigator.of(context).pushNamed("/");
+              _goToMainWallet();
             } else {
               Navigator.of(context).pushNamed("/setup");
             }
@@ -31,7 +39,14 @@ class InitialRoutingPageState extends State<InitialRoutingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(),
+      body: Container(
+        color: Colors.deepPurple,
+        child: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -10,9 +10,9 @@ class MainWalletBloc extends LightningBloc {
 
   // Wallet
   String _balance;
-  List<Transaction> _transactions;
-  List<Payment> _payments;
-  List<Invoice> _invoices;
+  List<Transaction> _transactions = [];
+  List<Payment> _payments = [];
+  List<Invoice> _invoices = [];
   List<HistoryItem> _history = [];
   Map<String, String> _nameCache = {};
   Map<String, String> _descriptionCache = {};
@@ -44,14 +44,16 @@ class MainWalletBloc extends LightningBloc {
   final _syncController = StreamController<bool>();
   Sink<bool> get sync => _syncController.sink;
 
-  MainWalletBloc() {
-    setup();
-  }
+  MainWalletBloc();
 
   void setup() async {
+    print("SETTING UP LND INSTANCE");
     await initLightning();
+    print("SYNCING WITH NODE");
     await syncWithNode();
+    print("SETTING UP SUBSCRIPTIONS");
     await setupSubscriptions();
+    print("FINISHED DOING EVERYTHING");
   }
 
   Future syncWithNode() async {
