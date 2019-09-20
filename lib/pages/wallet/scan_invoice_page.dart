@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:kaminari_wallet/blocs/send_bloc.dart';
 import 'package:kaminari_wallet/pages/wallet/send_page.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanInvoicePage extends StatelessWidget {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
   QRViewController _controller;
   bool _alreadyRecognized = false;
 
@@ -31,31 +30,26 @@ class ScanInvoicePage extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 QRView(
+                  key: qrKey,
                   onQRViewCreated: (controller) {
-                    final channel = controller.channel;
-                    controller.init(qrKey);
                     _controller = controller;
-                    channel.setMethodCallHandler((MethodCall call) async {
-                      switch (call.method) {
-                        case "onRecognizeQR":
-                          dynamic arguments = call.arguments;
-                          Uri uri = Uri.parse(arguments.toString());
-                          String invoice = arguments
-                              .toString()
-                              .substring(uri.scheme.length + 1);
-                          if (!_alreadyRecognized) {
-                            _alreadyRecognized = true;
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                  bloc: SendBloc("$invoice"),
-                                  child: SendPage(),
-                                ),
+                    _controller.scannedDataStream.listen(
+                      (data) {
+                        Uri uri = Uri.parse(data);
+                        String invoice = data.substring(uri.scheme.length + 1);
+                        if (!_alreadyRecognized) {
+                          _alreadyRecognized = true;
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                bloc: SendBloc("$invoice"),
+                                child: SendPage(),
                               ),
-                            );
-                          }
-                      }
-                    });
+                            ),
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
                 ClipPath(
