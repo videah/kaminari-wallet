@@ -34,10 +34,7 @@ dependencies:
   animated_stream_list: ^0.0.4
   date_util: ^0.1.4
   sliver_fill_remaining_box_adapter: ^0.1.1
-  qr_code_scanner:
-    git:
-      url: https://github.com/c0h1b4/qr_code_scanner
-      ref: ffb8d6c1f3cda65ba33a591beb26c0b770b58c7d
+  qr_code_scanner: ^0.0.12
   image_picker: ^0.6.0+10
 
   # The following adds the Cupertino Icons font to your application.

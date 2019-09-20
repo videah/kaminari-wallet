@@ -28,7 +28,7 @@ rm -rf lnd
 rm -rf grpc-gateway
 
 if [[ -f ./lib/generated/lnd/lnrpc/rpc.pbgrpc.dart ]]; then
-    echo -e "${GREEN}Successfully generated gRPC files needed to compile."
+    echo -e "${GREEN}Successfully generated gRPC files needed to compile.$NC"
 else
-    echo -e "${RED}There was an issue generating the gRPC files."
+    echo -e "${RED}There was an issue generating the gRPC files.$NC"
 fi
