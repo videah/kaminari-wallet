@@ -8,7 +8,7 @@ import (
 )
 
 var options = []flutter.Option{
-	flutter.WindowInitialDimensions(800, 1280),
+	flutter.WindowInitialDimensions(600, 750),
 	flutter.AddPlugin(&path_provider.PathProviderPlugin{
     	VendorName:      "selfish.systems",
     	ApplicationName: "kaminari-wallet",
