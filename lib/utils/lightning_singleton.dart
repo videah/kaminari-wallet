@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:convert/convert.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grpc/grpc.dart';
+import 'package:hive/hive.dart';
 import 'package:kaminari_wallet/generated/lnd/lnrpc/rpc.pbgrpc.dart';
 import 'package:kaminari_wallet/utils/lndconnect.dart';
 
@@ -15,8 +15,8 @@ class LightningSingleton {
   LightningSingleton._internal();
 
   Future initialize() async {
-    final storage = FlutterSecureStorage();
-    final settings = await storage.read(key: "lndconnect");
+    final storage = Hive.box("lndconnect");
+    final settings = await storage.get("lndconnect-string");
     final lndOptions = LNDConnect.decode(settings);
 
     final certificate = utf8.encode(lndOptions.cert);
