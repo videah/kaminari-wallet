@@ -106,14 +106,29 @@ class ReceiveLightningPageState extends State<ReceiveLightningPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                  child: DateTimePickerFormField(
-                    inputType: InputType.both,
-                    editable: false,
+                  child: DateTimeField(
                     format: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: "Expiry Date",
                     ),
+                    onShowPicker: (context, currentValue) async {
+                      final date = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          initialDate: currentValue ?? DateTime.now(),
+                          lastDate: DateTime(2100));
+                      if (date != null) {
+                        final time = await showTimePicker(
+                          context: context,
+                          initialTime:
+                          TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                        );
+                        return DateTimeField.combine(date, time);
+                      } else {
+                        return currentValue;
+                      }
+                    },
                   ),
                 )
               ],

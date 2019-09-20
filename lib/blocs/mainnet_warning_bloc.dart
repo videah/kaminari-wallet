@@ -8,7 +8,7 @@ class MainnetWarningBloc extends Bloc {
   final LNDConnectInfo lndOptions;
   bool _understood = false;
 
-  final _understoodSubject = BehaviorSubject<bool>(seedValue: false);
+  final _understoodSubject = BehaviorSubject<bool>.seeded(false);
   Stream get understood => _understoodSubject.stream;
 
   final _understoodController = StreamController<bool>();
