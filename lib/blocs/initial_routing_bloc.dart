@@ -52,6 +52,7 @@ class InitialRoutingBloc extends Bloc {
       return Future.wait([
         Hive.openBox("lndconnect", encryptionKey: base64.decode(key)),
         Hive.openBox("settings", encryptionKey: base64.decode(key)),
+        Hive.openBox("contacts", encryptionKey: base64.decode(key)),
       ]);
     }
   }

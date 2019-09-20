@@ -85,10 +85,10 @@ class MainWalletPage extends StatelessWidget {
             pinned: true,
             backgroundColor: Theme.of(context).accentColor,
             leading: IconButton(
-              icon: Icon(FontAwesomeIcons.fileInvoiceDollar),
-              tooltip: "Invoices",
+              icon: Icon(FontAwesomeIcons.addressBook),
+              tooltip: "Contacts",
               onPressed: () {
-
+                Navigator.of(context).pushNamed("/contacts");
               },
             ),
             actions: <Widget>[
