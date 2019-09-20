@@ -1,9 +1,10 @@
-import 'dart:io' show Platform;
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'package:flutter/foundation.dart' show debugDefaultTargetPlatformOverride;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,7 +26,7 @@ class InitialRoutingBloc extends Bloc {
     // Generating and storing a secure key, used to securely store
     // data required to connect and authenticate with an LND instance.
     var key;
-    if (Platform.isFuchsia) {
+    if (debugDefaultTargetPlatformOverride == TargetPlatform.fuchsia) {
       // We use SharedPreferences on desktop, since there's no plugin to do
       // that using the OS's keystore yet. This shouldn't be a problem though.
       print("We're on desktop");
