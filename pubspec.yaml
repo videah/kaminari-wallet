@@ -45,10 +45,15 @@ dependencies:
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
+  flutter_native_splash: ^0.1.8+2
   hive_generator: ^0.5.1
   build_runner: ^1.7.0
   flutter_test:
     sdk: flutter
+
+flutter_native_splash:
+  image: assets/images/splash_icon.png
+  color: "673ab7"
 
 dependency_overrides:
   flutter_svg: ^0.14.1
