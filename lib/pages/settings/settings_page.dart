@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:kaminari_wallet/blocs/initial_routing_bloc.dart';
@@ -16,7 +17,9 @@ class SettingsPage extends StatelessWidget {
         title: Text("Settings"),
       ),
       body: SeperatedListView(
-        divider: Divider(height: 0.0,),
+        divider: Divider(
+          height: 0.0,
+        ),
         children: <Widget>[
           ListTile(
             title: Text("Node Info"),
@@ -48,10 +51,22 @@ class SettingsPage extends StatelessWidget {
                     child: InitialRoutingPage(),
                   ),
                 ),
-                    (_) => false,
+                (_) => false,
               );
             },
           ),
+          ListTile(
+            title: Text("View Licenses"),
+            trailing: Icon(FontAwesomeIcons.gitAlt),
+            onTap: () {
+              showLicensePage(
+                context: context,
+                applicationIcon: Center(
+                  child: Text("雷", style: TextStyle(fontSize: 64.0),),
+                ),
+              );
+            },
+          )
         ],
       ),
     );
