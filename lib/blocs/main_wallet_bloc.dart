@@ -174,8 +174,8 @@ class MainWalletBloc extends LightningBloc {
     _transactions.forEach(
       (tx) => _historyItems.add(
         HistoryItem(
-          name: "Anonymous",
-          memo: "Chain Transaction",
+          name: "Chain Transaction",
+          memo: "${tx.txHash.substring(0, 16)}...",
           amount: tx.amount.toInt(),
           timestamp: tx.timeStamp.toInt(),
           confirmations: tx.numConfirmations,
